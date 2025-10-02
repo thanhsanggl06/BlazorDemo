@@ -1,0 +1,224 @@
+﻿@* Components/MessageBoxContainer.razor *@
+@using C1.Blazor.Input
+@inject IMessageBoxService MessageBoxService
+@implements IDisposable
+
+@if (currentModel != null)
+{
+    @* ⭐ SỬA DỤNG PopupHeader và PopupContent THAY VÌ Header và WindowContent *@
+    <C1Window @ref="messageWindow"
+              Style="@windowStyle"
+              IsModeless="false">
+        <PopupHeader>
+            @* ⭐ HEADER CONTENT *@
+            <div class="d-flex align-items-center gap-2 @GetHeaderBgClass()" style="padding: 0.5rem 0;">
+                <div style="font-size: 20px;">
+                    @GetHeaderIcon()
+                </div>
+                <span class="fw-semibold">@currentModel.Title</span>
+            </div>
+        </PopupHeader>
+
+        <PopupContent>
+            <!-- Modal Body using Bootstrap -->
+            <div class="modal-body">
+                <div class="d-flex align-items-start gap-3">
+                    <!-- Icon -->
+                    <div class="flex-shrink-0">
+                        <div class="@GetIconClass()" style="font-size: 48px;">
+                            @GetIcon()
+                        </div>
+                    </div>
+
+                    <!-- Message Content -->
+                    <div class="flex-grow-1">
+                        @if (currentModel.Type == MessageBoxType.Prompt)
+                        {
+                            <p class="mb-3">@currentModel.Message</p>
+                            <input type="text"
+                                   class="form-control"
+                                   @bind="promptValue"
+                                   @bind:event="oninput"
+                                   placeholder="@currentModel.DefaultValue" />
+                        }
+                        else
+                        {
+                            <p class="mb-0">@((MarkupString)currentModel.Message.Replace("\n", "<br/>"))</p>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Footer using Bootstrap -->
+            <div class="modal-footer">
+                @switch (currentModel.Buttons)
+                {
+                    case MessageBoxButtons.OK:
+                        <button class="btn btn-primary" @onclick="() => Close(MessageBoxResult.OK)">
+                            @currentModel.OkButtonText
+                        </button>
+                        break;
+
+                    case MessageBoxButtons.OKCancel:
+                        <button class="btn btn-secondary" @onclick="() => Close(MessageBoxResult.Cancel)">
+                            @currentModel.CancelButtonText
+                        </button>
+                        <button class="btn btn-primary" @onclick="() => Close(MessageBoxResult.OK)">
+                            @currentModel.OkButtonText
+                        </button>
+                        break;
+
+                    case MessageBoxButtons.YesNo:
+                        <button class="btn btn-secondary" @onclick="() => Close(MessageBoxResult.No)">
+                            @currentModel.NoButtonText
+                        </button>
+                        <button class="btn btn-primary" @onclick="() => Close(MessageBoxResult.Yes)">
+                            @currentModel.YesButtonText
+                        </button>
+                        break;
+
+                    case MessageBoxButtons.YesNoCancel:
+                        <button class="btn btn-secondary" @onclick="() => Close(MessageBoxResult.Cancel)">
+                            @currentModel.CancelButtonText
+                        </button>
+                        <button class="btn btn-outline-secondary" @onclick="() => Close(MessageBoxResult.No)">
+                            @currentModel.NoButtonText
+                        </button>
+                        <button class="btn btn-primary" @onclick="() => Close(MessageBoxResult.Yes)">
+                            @currentModel.YesButtonText
+                        </button>
+                        break;
+                }
+            </div>
+        </PopupContent>
+    </C1Window>
+}
+
+@code {
+    private C1Window messageWindow;
+    private MessageBoxModel currentModel;
+    private TaskCompletionSource<MessageBoxResult> taskCompletion;
+    private TaskCompletionSource<string> promptTaskCompletion;
+    private string promptValue = "";
+    private string windowStyle = "width: 450px; max-width: 90vw;";
+
+    protected override void OnInitialized()
+    {
+        MessageBoxService.OnShow += ShowMessageBox;
+        MessageBoxService.OnPrompt += ShowPromptBox;
+    }
+
+    private async Task<MessageBoxResult> ShowMessageBox(MessageBoxModel model)
+    {
+        currentModel = model;
+        promptValue = model.DefaultValue;
+        taskCompletion = new TaskCompletionSource<MessageBoxResult>();
+
+        await InvokeAsync(StateHasChanged);
+        await Task.Delay(100);
+
+        messageWindow?.Open();
+
+        return await taskCompletion.Task;
+    }
+
+    private async Task<string> ShowPromptBox(string modelJson)
+    {
+        var model = System.Text.Json.JsonSerializer.Deserialize<MessageBoxModel>(modelJson);
+        currentModel = model;
+        promptValue = model.DefaultValue;
+        promptTaskCompletion = new TaskCompletionSource<string>();
+
+        await InvokeAsync(StateHasChanged);
+        await Task.Delay(100);
+
+        messageWindow?.Open();
+
+        return await promptTaskCompletion.Task;
+    }
+
+    private void Close(MessageBoxResult result)
+    {
+        messageWindow?.Close();
+
+        if (currentModel.Type == MessageBoxType.Prompt)
+        {
+            if (result == MessageBoxResult.OK)
+            {
+                promptTaskCompletion?.SetResult(promptValue);
+            }
+            else
+            {
+                promptTaskCompletion?.SetResult(null);
+            }
+        }
+        else
+        {
+            taskCompletion?.SetResult(result);
+        }
+
+        currentModel = null;
+        promptValue = "";
+        StateHasChanged();
+    }
+
+    private string GetHeaderBgClass()
+    {
+        return currentModel?.Type switch
+        {
+            MessageBoxType.Success => "text-success",
+            MessageBoxType.Error => "text-danger",
+            MessageBoxType.Warning => "text-warning",
+            MessageBoxType.Question => "text-info",
+            MessageBoxType.Prompt => "text-secondary",
+            _ => "text-primary"
+        };
+    }
+
+    private string GetIconClass()
+    {
+        return currentModel?.Type switch
+        {
+            MessageBoxType.Success => "text-success",
+            MessageBoxType.Error => "text-danger",
+            MessageBoxType.Warning => "text-warning",
+            MessageBoxType.Question => "text-info",
+            MessageBoxType.Prompt => "text-secondary",
+            _ => "text-primary"
+        };
+    }
+
+    private MarkupString GetHeaderIcon()
+    {
+        return currentModel?.Type switch
+        {
+            MessageBoxType.Success => (MarkupString)"<i class='bi bi-check-circle-fill'></i>",
+            MessageBoxType.Error => (MarkupString)"<i class='bi bi-x-circle-fill'></i>",
+            MessageBoxType.Warning => (MarkupString)"<i class='bi bi-exclamation-triangle-fill'></i>",
+            MessageBoxType.Question => (MarkupString)"<i class='bi bi-question-circle-fill'></i>",
+            MessageBoxType.Prompt => (MarkupString)"<i class='bi bi-pencil-square'></i>",
+            _ => (MarkupString)"<i class='bi bi-info-circle-fill'></i>"
+        };
+    }
+
+    private MarkupString GetIcon()
+    {
+        var icon = currentModel?.Type switch
+        {
+            MessageBoxType.Success => "bi-check-circle-fill",
+            MessageBoxType.Error => "bi-x-circle-fill",
+            MessageBoxType.Warning => "bi-exclamation-triangle-fill",
+            MessageBoxType.Question => "bi-question-circle-fill",
+            MessageBoxType.Prompt => "bi-pencil-square",
+            _ => "bi-info-circle-fill"
+        };
+
+        return (MarkupString)$"<i class='bi {icon}'></i>";
+    }
+
+    public void Dispose()
+    {
+        MessageBoxService.OnShow -= ShowMessageBox;
+        MessageBoxService.OnPrompt -= ShowPromptBox;
+    }
+}

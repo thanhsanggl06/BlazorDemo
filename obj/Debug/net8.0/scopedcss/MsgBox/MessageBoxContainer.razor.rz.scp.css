@@ -1,0 +1,24 @@
+.c1-window[b-0av9xf34qz] {
+    border-radius: 0.5rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+    .c1-window .c1-window-header[b-0av9xf34qz] {
+        border-radius: 0.5rem 0.5rem 0 0;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .c1-window .c1-window-content[b-0av9xf34qz] {
+        padding: 0;
+    }
+
+@media (max-width: 576px) {
+    .modal-footer[b-0av9xf34qz] {
+        flex-direction: column-reverse;
+        gap: 0.5rem;
+    }
+
+        .modal-footer .btn[b-0av9xf34qz] {
+            width: 100%;
+        }
+}

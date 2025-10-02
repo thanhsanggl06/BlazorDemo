@@ -1,0 +1,148 @@
+﻿@using C1.Blazor.Grid
+@using C1.Blazor.Core
+@using C1.DataCollection
+@using C1.Blazor.DataPager
+@using BlazorSolution.Model
+@using C1.Blazor.Input
+@inject IMessageBoxService MessageBox
+
+@page "/"
+
+<PageTitle>Home</PageTitle>
+
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+
+<FlexGrid @ref="flexGrid"
+          ItemsSource="@pagedItems"
+          IsReadOnly="true"
+          SelectionMode="GridSelectionMode.None"
+          HeadersVisibility="GridHeadersVisibility.All"
+          CellTapped="OnCellTapped"
+          AutoGenerateColumns="false"
+          Style="@("height:500px")">
+    <FlexGridColumns>
+        <GridColumn Binding="Id"
+                    Header="Product ID"
+                    IsReadOnly="true" />
+
+        <GridColumn Binding="Name"
+                    Header="Product Name" />
+
+        <GridColumn Binding="Price"
+                    Header="Price (VNĐ)"
+                    Format="N0" />
+    </FlexGridColumns>
+</FlexGrid>
+<C1DataPager Source="pagedItems" />
+
+<C1Window @ref="myPopup" IsDarkOverlay="false" Style="@("width: 400px")">
+    <PopupHeader>Window Popup Header</PopupHeader>
+    <PopupContent>Hello. This is the Windows control.</PopupContent>
+</C1Window>
+
+<p>@message</p>
+
+
+@code {
+
+    private FlexGrid? flexGrid;
+    private List<Product> products = new();
+
+    private int nextId = 11;
+    protected override void OnInitialized()
+    {
+        LoadProducts();
+    }
+
+    C1PagedDataCollection<Product>? pagedItems;
+
+    private void LoadProducts()
+    {
+        products = new List<Product>
+    {
+        new Product { Id = 1, Name = "1", Price = 25000000 },
+        new Product { Id = 2, Name = "iPhone 15 Pro Max", Price = 32000000 },
+        new Product { Id = 3, Name = "Samsung Galaxy S24", Price = 22000000 },
+        new Product { Id = 4, Name = "iPad Air M2", Price = 18000000 },
+        new Product { Id = 5, Name = "MacBook Pro 14", Price = 45000000 },
+        new Product { Id = 6, Name = "2", Price = 8500000 },
+        new Product { Id = 7, Name = "AirPods Pro 2", Price = 6500000 },
+        new Product { Id = 8, Name = "Apple Watch Series 9", Price = 11000000 },
+        new Product { Id = 9, Name = "Logitech MX Master 3S", Price = 2500000 },
+        new Product { Id = 10, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 }
+    };
+        foreach(Product p in products){
+            p.Validate();
+        }
+
+        var baseCollection = new C1DataCollection<Product>(products);
+
+        // Bọc tiếp vào Paged collection để phân trang
+        pagedItems = new C1PagedDataCollection<Product>(baseCollection)
+        {
+            PageSize = 5 // số bản ghi mỗi trang
+        };
+    }
+
+    string message = "";
+    Product test = new Product();
+
+    private List<string> propsItem = new()
+    {
+        "Id", "Name", "Price"
+    };
+
+    C1Window myPopup;
+    void OpenPopup()
+    {
+        myPopup.Open();
+    }
+    void ClosePopup()
+    {
+        myPopup.Close();
+    }
+
+
+    private async void OnCellTapped(object sender, GridInputEventArgs e)
+    {
+        if (e == null) return;
+
+        if (e.CellType == GridCellType.RowHeader)
+        {
+            var grid = sender as FlexGrid;
+            if (grid == null) return;
+
+            int rowIndex = e.CellRange.Row;
+            if (rowIndex < 0) return;
+
+            // Lấy object dữ liệu tương ứng
+            // Giả sử ItemsSource là IEnumerable<MyItem>
+            var itemsEnum = grid.ItemsSource as IEnumerable<Product>;
+            if (itemsEnum == null) return;
+
+            // Lấy item tại hàng đó
+            var item = itemsEnum.ElementAtOrDefault(rowIndex);
+            if (item == null || !item.HasErrors) return;
+
+            List<string> ErrorDetails = new();
+            foreach(var prop in propsItem)
+            {
+                var propErrs = item.GetErrors(prop);
+                if (propErrs != null && propErrs.Cast<object>().Any())
+                {
+                    foreach(var errMessage in propErrs)
+                    {
+                        await MessageBox.ErrorAsync("データの保存に失敗しました。");
+                        ErrorDetails.Add(errMessage.ErrorMessage ?? "");
+                    }
+                }
+            }
+
+            StateHasChanged();
+        }
+    }
+    
+    
+}

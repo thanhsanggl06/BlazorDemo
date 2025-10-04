@@ -1,0 +1,241 @@
+﻿@page "/advanced-form"
+@using System.ComponentModel.DataAnnotations
+@* @using BlazorFormValidation.Validators *@
+
+<PageTitle>Form Nâng Cao</PageTitle>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card shadow-lg">
+                <div class="card-header bg-success text-white">
+                    <h3 class="mb-0">Form Đăng Ký Sản Phẩm</h3>
+                </div>
+                <div class="card-body">
+                    <EditForm EditContext="@editContext" OnValidSubmit="@HandleValidSubmit">
+                        <DataAnnotationsValidator />
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Tên sản phẩm:</label>
+                                    <InputText class="form-control"
+                                               @bind-Value="productModel.ProductName"
+                                               @onblur="@(() => ValidateField(nameof(productModel.ProductName)))" />
+                                    <ValidationMessage For="@(() => productModel.ProductName)" class="text-danger" />
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Giá gốc (VNĐ):</label>
+                                    <InputNumber class="form-control"
+                                                 @bind-Value="productModel.OriginalPrice"
+                                                 @onblur="@(() => ValidateField(nameof(productModel.OriginalPrice)))" />
+                                    <ValidationMessage For="@(() => productModel.OriginalPrice)" class="text-danger" />
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Giá bán (VNĐ):</label>
+                                    <InputNumber class="form-control"
+                                                 @bind-Value="productModel.SalePrice"
+                                                 @onblur="@(() => ValidateField(nameof(productModel.SalePrice)))" />
+                                    <ValidationMessage For="@(() => productModel.SalePrice)" class="text-danger" />
+                                    <small class="text-muted">Giá bán phải nhỏ hơn giá gốc</small>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Website sản phẩm:</label>
+                                    <InputText class="form-control"
+                                               @bind-Value="productModel.WebsiteUrl"
+                                               @onblur="@(() => ValidateField(nameof(productModel.WebsiteUrl)))" />
+                                    <ValidationMessage For="@(() => productModel.WebsiteUrl)" class="text-danger" />
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Danh mục:</label>
+                                    <InputSelect class="form-select"
+                                                 @bind-Value="productModel.Category"
+                                                 @onchange="@(() => ValidateField(nameof(productModel.Category)))">
+                                        <option value="">-- Chọn danh mục --</option>
+                                        <option value="Electronics">Điện tử</option>
+                                        <option value="Fashion">Thời trang</option>
+                                        <option value="Food">Thực phẩm</option>
+                                        <option value="Books">Sách</option>
+                                    </InputSelect>
+                                    <ValidationMessage For="@(() => productModel.Category)" class="text-danger" />
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Ngày sản xuất:</label>
+                                    <InputDate class="form-control"
+                                               @bind-Value="productModel.ManufactureDate"
+                                               @onblur="@(() => ValidateField(nameof(productModel.ManufactureDate)))" />
+                                    <ValidationMessage For="@(() => productModel.ManufactureDate)" class="text-danger" />
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Mô tả:</label>
+                                    <InputTextArea class="form-control"
+                                                   rows="4"
+                                                   @bind-Value="productModel.Description"
+                                                   @onblur="@(() => ValidateField(nameof(productModel.Description)))" />
+                                    <ValidationMessage For="@(() => productModel.Description)" class="text-danger" />
+                                </div>
+
+                                <div class="mb-3 form-check">
+                                    <InputCheckbox class="form-check-input"
+                                                   @bind-Value="productModel.IsAvailable"
+                                                   @onchange="@(() => ValidateField(nameof(productModel.IsAvailable)))" />
+                                    <label class="form-check-label">Còn hàng</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="bi bi-check-circle"></i> Lưu sản phẩm
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary" @onclick="ResetForm">
+                                <i class="bi bi-arrow-clockwise"></i> Làm mới
+                            </button>
+                        </div>
+                    </EditForm>
+
+                    @if (submissionSuccess)
+                    {
+                        <div class="alert alert-success mt-4 animate__animated animate__fadeIn" role="alert">
+                            <h5 class="alert-heading">✅ Đăng ký sản phẩm thành công!</h5>
+                            <hr>
+                            <p class="mb-0"><strong>Sản phẩm:</strong> @productModel.ProductName</p>
+                            <p class="mb-0"><strong>Giá:</strong> @productModel.SalePrice.ToString("N0") VNĐ</p>
+                            <p class="mb-0"><strong>Danh mục:</strong> @productModel.Category</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private ProductModel productModel = new();
+    private EditContext? editContext;
+    private ValidationMessageStore? messageStore;
+    private bool submissionSuccess = false;
+
+    protected override void OnInitialized()
+    {
+        editContext = new EditContext(productModel);
+        messageStore = new ValidationMessageStore(editContext);
+    }
+
+    private void ValidateField(string fieldName)
+    {
+        if (editContext == null || messageStore == null) return;
+
+        var validationContext = new ValidationContext(productModel) { MemberName = fieldName };
+        var validationResults = new List<ValidationResult>();
+
+        Validator.TryValidateProperty(
+            productModel.GetType().GetProperty(fieldName)?.GetValue(productModel),
+            validationContext,
+            validationResults);
+
+        messageStore.Clear(editContext.Field(fieldName));
+
+        foreach (var result in validationResults)
+        {
+            messageStore.Add(editContext.Field(fieldName), result.ErrorMessage!);
+        }
+
+        editContext.NotifyValidationStateChanged();
+    }
+
+    private void HandleValidSubmit()
+    {
+        submissionSuccess = true;
+        Console.WriteLine($"Product saved: {productModel.ProductName}");
+    }
+
+    private void ResetForm()
+    {
+        productModel = new ProductModel();
+        editContext = new EditContext(productModel);
+        messageStore = new ValidationMessageStore(editContext);
+        submissionSuccess = false;
+    }
+
+    public class ProductModel
+    {
+        [Required(ErrorMessage = "Tên sản phẩm là bắt buộc")]
+        [StringLength(100, MinimumLength = 3, ErrorMessage = "Tên sản phẩm phải từ 3-100 ký tự")]
+        public string ProductName { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Giá gốc là bắt buộc")]
+        [Range(1000, 1000000000, ErrorMessage = "Giá gốc phải từ 1,000 đến 1,000,000,000 VNĐ")]
+        public decimal OriginalPrice { get; set; }
+
+        [Required(ErrorMessage = "Giá bán là bắt buộc")]
+        [Range(1000, 1000000000, ErrorMessage = "Giá bán phải từ 1,000 đến 1,000,000,000 VNĐ")]
+        [LessThan(nameof(OriginalPrice), ErrorMessage = "Giá bán phải nhỏ hơn giá gốc")]
+        public decimal SalePrice { get; set; }
+
+        [Required(ErrorMessage = "Website là bắt buộc")]
+        [ValidUrl(ErrorMessage = "URL không hợp lệ (phải bắt đầu với http:// hoặc https://)")]
+        public string WebsiteUrl { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Danh mục là bắt buộc")]
+        public string Category { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Ngày sản xuất là bắt buộc")]
+        [DateNotInFuture(ErrorMessage = "Ngày sản xuất không được là ngày tương lai")]
+        public DateTime ManufactureDate { get; set; } = DateTime.Today;
+
+        [Required(ErrorMessage = "Mô tả là bắt buộc")]
+        [StringLength(500, MinimumLength = 10, ErrorMessage = "Mô tả phải từ 10-500 ký tự")]
+        public string Description { get; set; } = string.Empty;
+
+        public bool IsAvailable { get; set; } = true;
+    }
+
+    /// <summary>
+    /// Custom validator để kiểm tra giá trị nhỏ hơn một giá trị khác
+    /// </summary>
+    public class LessThanAttribute : ValidationAttribute
+    {
+        private readonly string _comparisonProperty;
+
+        public LessThanAttribute(string comparisonProperty)
+        {
+            _comparisonProperty = comparisonProperty;
+        }
+
+        protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
+        {
+            var currentValue = value as IComparable;
+            var property = validationContext.ObjectType.GetProperty(_comparisonProperty);
+
+            if (property == null)
+            {
+                return new ValidationResult($"Property {_comparisonProperty} không tồn tại");
+            }
+
+            var comparisonValue = property.GetValue(validationContext.ObjectInstance) as IComparable;
+
+            if (currentValue == null || comparisonValue == null)
+            {
+                return ValidationResult.Success;
+            }
+
+            if (currentValue.CompareTo(comparisonValue) >= 0)
+            {
+                return new ValidationResult(
+                    ErrorMessage ?? $"Giá trị phải nhỏ hơn {_comparisonProperty}"
+                );
+            }
+
+            return ValidationResult.Success;
+        }
+    }
+}

@@ -57,6 +57,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xHcmlkTGF5b3V0XFN0YWNrLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/NetSource/BlazorSolution/Pages/AdvanceForm.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWR2YW5jZUZvcm0ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/NetSource/BlazorSolution/Pages/BlazorFormDemo.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQmxhem9yRm9ybURlbW8ucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
@@ -95,6 +99,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [D:/NetSource/BlazorSolution/Pages/UserForm.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVXNlckZvcm0ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/NetSource/BlazorSolution/Pages/UserRegistration.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVXNlclJlZ2lzdHJhdGlvbi5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/NetSource/BlazorSolution/Pages/Weather.razor]

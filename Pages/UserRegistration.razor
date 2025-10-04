@@ -1,0 +1,178 @@
+﻿@page "/user-registration"
+@using System.ComponentModel.DataAnnotations
+
+<PageTitle>Đăng ký người dùng</PageTitle>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">Form Đăng Ký Người Dùng</h3>
+                </div>
+                <div class="card-body">
+                    <EditForm Model="@userModel" OnValidSubmit="@HandleValidSubmit">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary class="alert alert-danger" />
+
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Tên đăng nhập:</label>
+                            <InputText id="username"
+                                       class="form-control"
+                                       @bind-Value="userModel.Username"
+                                       @onblur="@(() => ValidateField(nameof(userModel.Username)))" />
+                            <ValidationMessage For="@(() => userModel.Username)" class="text-danger" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email:</label>
+                            <InputText id="email"
+                                       type="email"
+                                       class="form-control"
+                                       @bind-Value="userModel.Email"
+                                       @onblur="@(() => ValidateField(nameof(userModel.Email)))" />
+                            <ValidationMessage For="@(() => userModel.Email)" class="text-danger" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Mật khẩu:</label>
+                            <InputText id="password"
+                                       type="password"
+                                       class="form-control"
+                                       @bind-Value="userModel.Password"
+                                       @onblur="@(() => ValidateField(nameof(userModel.Password)))" />
+                            <ValidationMessage For="@(() => userModel.Password)" class="text-danger" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="confirmPassword" class="form-label">Xác nhận mật khẩu:</label>
+                            <InputText id="confirmPassword"
+                                       type="password"
+                                       class="form-control"
+                                       @bind-Value="userModel.ConfirmPassword"
+                                       @onblur="@(() => ValidateField(nameof(userModel.ConfirmPassword)))" />
+                            <ValidationMessage For="@(() => userModel.ConfirmPassword)" class="text-danger" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="age" class="form-label">Tuổi:</label>
+                            <InputNumber id="age"
+                                         class="form-control"
+                                         @bind-Value="userModel.Age"
+                                         @onblur="@(() => ValidateField(nameof(userModel.Age)))" />
+                            <ValidationMessage For="@(() => userModel.Age)" class="text-danger" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="phoneNumber" class="form-label">Số điện thoại:</label>
+                            <InputText id="phoneNumber"
+                                       class="form-control"
+                                       @bind-Value="userModel.PhoneNumber"
+                                       @onblur="@(() => ValidateField(nameof(userModel.PhoneNumber)))" />
+                            <ValidationMessage For="@(() => userModel.PhoneNumber)" class="text-danger" />
+                        </div>
+
+                        <div class="mb-3 form-check">
+                            <InputCheckbox id="acceptTerms"
+                                           class="form-check-input"
+                                           @bind-Value="userModel.AcceptTerms"
+                                           @onchange="@(() => ValidateField(nameof(userModel.AcceptTerms)))" />
+                            <label class="form-check-label" for="acceptTerms">
+                                Tôi đồng ý với điều khoản sử dụng
+                            </label>
+                            <ValidationMessage For="@(() => userModel.AcceptTerms)" class="text-danger d-block" />
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">Đăng Ký</button>
+                            <button type="button" class="btn btn-secondary" @onclick="ResetForm">Đặt lại</button>
+                        </div>
+                    </EditForm>
+
+                    @if (submissionSuccess)
+                    {
+                        <div class="alert alert-success mt-3" role="alert">
+                            <h4 class="alert-heading">Đăng ký thành công!</h4>
+                            <p>Chào mừng <strong>@userModel.Username</strong>!</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private UserModel userModel = new();
+    private bool submissionSuccess = false;
+    private ValidationMessageStore? messageStore;
+
+    private void ValidateField(string fieldName)
+    {
+        var editContext = new EditContext(userModel);
+        messageStore = new ValidationMessageStore(editContext);
+
+        var validationContext = new ValidationContext(userModel) { MemberName = fieldName };
+        var validationResults = new List<ValidationResult>();
+
+        Validator.TryValidateProperty(
+            userModel.GetType().GetProperty(fieldName)?.GetValue(userModel),
+            validationContext,
+            validationResults);
+
+        messageStore.Clear();
+
+        foreach (var result in validationResults)
+        {
+            messageStore.Add(editContext.Field(fieldName), result.ErrorMessage!);
+        }
+
+        editContext.NotifyValidationStateChanged();
+        StateHasChanged();
+    }
+
+    private void HandleValidSubmit()
+    {
+        submissionSuccess = true;
+        Console.WriteLine($"User registered: {userModel.Username}, Email: {userModel.Email}");
+    }
+
+    private void ResetForm()
+    {
+        userModel = new UserModel();
+        submissionSuccess = false;
+        StateHasChanged();
+    }
+
+    public class UserModel
+    {
+        [Required(ErrorMessage = "Tên đăng nhập là bắt buộc")]
+        [StringLength(20, MinimumLength = 3, ErrorMessage = "Tên đăng nhập phải từ 3-20 ký tự")]
+        [UsernameValidation(ErrorMessage = "Tên đăng nhập chỉ chứa chữ cái, số và gạch dưới")]
+        public string Username { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Email là bắt buộc")]
+        [EmailAddress(ErrorMessage = "Email không hợp lệ")]
+        public string Email { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Mật khẩu là bắt buộc")]
+        [StringLength(100, MinimumLength = 6, ErrorMessage = "Mật khẩu phải có ít nhất 6 ký tự")]
+        [StrongPassword(ErrorMessage = "Mật khẩu phải chứa ít nhất 1 chữ hoa, 1 chữ thường và 1 số")]
+        public string Password { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Xác nhận mật khẩu là bắt buộc")]
+        [Compare(nameof(Password), ErrorMessage = "Mật khẩu xác nhận không khớp")]
+        public string ConfirmPassword { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Tuổi là bắt buộc")]
+        [Range(18, 100, ErrorMessage = "Tuổi phải từ 18 đến 100")]
+        public int Age { get; set; }
+
+        [Required(ErrorMessage = "Số điện thoại là bắt buộc")]
+        [PhoneNumberValidation(ErrorMessage = "Số điện thoại không hợp lệ (phải có 10-11 số)")]
+        public string PhoneNumber { get; set; } = string.Empty;
+
+        [Range(typeof(bool), "true", "true", ErrorMessage = "Bạn phải đồng ý với điều khoản")]
+        public bool AcceptTerms { get; set; }
+    }
+}

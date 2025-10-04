@@ -1,0 +1,145 @@
+﻿@* Grid Component - Tương tự MUI Grid *@
+
+<div class="@GetGridClass()" style="@GetGridStyle()" @attributes="AdditionalAttributes">
+    @ChildContent
+</div>
+
+@code {
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public bool Container { get; set; } = false;
+
+    [Parameter]
+    public bool Item { get; set; } = false;
+
+    [Parameter]
+    public int? Xs { get; set; } // 1-12 hoặc auto
+
+    [Parameter]
+    public int? Sm { get; set; }
+
+    [Parameter]
+    public int? Md { get; set; }
+
+    [Parameter]
+    public int? Lg { get; set; }
+
+    [Parameter]
+    public int? Xl { get; set; }
+
+    [Parameter]
+    public int? Xxl { get; set; }
+
+    [Parameter]
+    public int Spacing { get; set; } = 0; // 0-5 (Bootstrap gutter spacing)
+
+    [Parameter]
+    public string? JustifyContent { get; set; } // start, center, end, between, around, evenly
+
+    [Parameter]
+    public string? AlignItems { get; set; } // start, center, end, baseline, stretch
+
+    [Parameter]
+    public string? Direction { get; set; } // row, row-reverse, column, column-reverse
+
+    [Parameter]
+    public string? Class { get; set; }
+
+    [Parameter]
+    public string? Style { get; set; }
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object>? AdditionalAttributes { get; set; }
+
+    private string GetGridClass()
+    {
+        var classes = new List<string>();
+
+        if (Container)
+        {
+            classes.Add("row");
+
+            if (Spacing > 0)
+            {
+                classes.Add($"g-{Spacing}");
+            }
+
+            if (!string.IsNullOrEmpty(JustifyContent))
+            {
+                classes.Add($"justify-content-{JustifyContent}");
+            }
+
+            if (!string.IsNullOrEmpty(AlignItems))
+            {
+                classes.Add($"align-items-{AlignItems}");
+            }
+        }
+
+        if (Item)
+        {
+            if (Xs.HasValue)
+            {
+                classes.Add(Xs.Value == 0 ? "col" : $"col-{Xs.Value}");
+            }
+            if (Sm.HasValue)
+            {
+                classes.Add(Sm.Value == 0 ? "col-sm" : $"col-sm-{Sm.Value}");
+            }
+            if (Md.HasValue)
+            {
+                classes.Add(Md.Value == 0 ? "col-md" : $"col-md-{Md.Value}");
+            }
+            if (Lg.HasValue)
+            {
+                classes.Add(Lg.Value == 0 ? "col-lg" : $"col-lg-{Lg.Value}");
+            }
+            if (Xl.HasValue)
+            {
+                classes.Add(Xl.Value == 0 ? "col-xl" : $"col-xl-{Xl.Value}");
+            }
+            if (Xxl.HasValue)
+            {
+                classes.Add(Xxl.Value == 0 ? "col-xxl" : $"col-xxl-{Xxl.Value}");
+            }
+
+            if (!Xs.HasValue && !Sm.HasValue && !Md.HasValue && !Lg.HasValue && !Xl.HasValue && !Xxl.HasValue)
+            {
+                classes.Add("col");
+            }
+        }
+
+        if (!string.IsNullOrEmpty(Class))
+        {
+            classes.Add(Class);
+        }
+
+        return string.Join(" ", classes);
+    }
+
+    private string? GetGridStyle()
+    {
+        var styles = new List<string>();
+
+        if (Container && !string.IsNullOrEmpty(Direction))
+        {
+            var flexDirection = Direction switch
+            {
+                "row" => "row",
+                "row-reverse" => "row-reverse",
+                "column" => "column",
+                "column-reverse" => "column-reverse",
+                _ => "row"
+            };
+            styles.Add($"flex-direction: {flexDirection}");
+        }
+
+        if (!string.IsNullOrEmpty(Style))
+        {
+            styles.Add(Style);
+        }
+
+        return styles.Count > 0 ? string.Join("; ", styles) : null;
+    }
+}

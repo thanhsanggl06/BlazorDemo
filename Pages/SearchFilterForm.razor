@@ -1,0 +1,55 @@
+﻿@page "/test-form"
+@inject IMessageBoxService MessageBox
+
+<Container MaxWidth="fluid">
+    <Grid Container="true">
+        <Grid Item="true" xs="12" Md="2">
+            <Box My="3">
+                <label>kaisame</label>
+                <C1ComboBox @bind-SelectedItem="@country"
+                            ItemsSource="countries"
+                            DisplayMemberPath="Name"
+                            ValueMemberPath="Code"
+                            T="Country"
+                            Placeholder="Select a Country"
+                            class="form-control" />
+            </Box>
+        </Grid>
+        <Grid Item="true" xs="12">
+            <Box Bg="primary" Height="100px" >
+            </Box>
+        </Grid>
+        <Grid Container="true" xs="12" JustifyContent="between">
+            <Grid Item="true" Xs="3">
+                Master name
+            </Grid>
+            <Grid Item="true" Xs="6" Class="p-0">
+                <Stack Direction="row" JustifyContent="end">
+                    <button>Test</button>
+                    <button>Test</button>
+                </Stack>
+            </Grid>
+        </Grid>
+    </Grid>
+</Container>
+
+@code
+{
+    List<Country> list;
+    IEnumerable<Country> countries;
+    Country country;
+
+    protected override void OnInitialized()
+    {
+        list = new()
+        {
+            new Country(){Code = "VN", Name = "Viet Nam"},
+            new Country(){Code = "US", Name = "Hoa Ky"},
+        };
+
+        countries = list;
+        country = list.First(c => c.Code == "VN");
+    }
+
+    
+}

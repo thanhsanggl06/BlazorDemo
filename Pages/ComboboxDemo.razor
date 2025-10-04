@@ -1,0 +1,144 @@
+﻿@page "/simple-combobox-demo"
+@using C1.Blazor.Input
+
+<div class="container mt-4">
+    <h2 class="mb-4">Demo C1ComboBox đơn giản</h2>
+
+    <div class="row">
+        <!-- Example 1: Basic -->
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Ví dụ cơ bản</h5>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Chọn quốc gia</label>
+                        <C1ComboBox T="Country"
+                                    ItemsSource="@Countries"
+                                    DisplayMemberPath="Name"
+                                    Class="form-control">
+                        </C1ComboBox>
+                        <small class="form-text text-muted">ComboBox size mặc định</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Example 2: Small Size -->
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Size nhỏ</h5>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Chọn thành phố</label>
+                        <C1ComboBox T="City"
+                                    ItemsSource="@Cities"
+                                    DisplayMemberPath="Name"
+                                    Class="form-control form-control-sm">
+                        </C1ComboBox>
+                        <small class="form-text text-muted">ComboBox size nhỏ</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Example 3: Large Size -->
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Size lớn</h5>
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Độ ưu tiên</label>
+                        <C1ComboBox T="Priority"
+                                    ItemsSource="@Priorities"
+                                    DisplayMemberPath="Name"
+                                    Class="form-control form-control-lg">
+                        </C1ComboBox>
+                        <small class="form-text text-muted">ComboBox size lớn</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Example 4: With Required -->
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Trường bắt buộc</h5>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">
+                            Trạng thái <span class="text-danger">*</span>
+                        </label>
+                        <C1ComboBox T="Status"
+                                    ItemsSource="@Statuses"
+                                    DisplayMemberPath="Name"
+                                    Class="form-control">
+                        </C1ComboBox>
+                        <small class="form-text text-muted">Trường bắt buộc chọn</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    public class Country
+    {
+        public string Name { get; set; } = "";
+    }
+
+    public class City
+    {
+        public string Name { get; set; } = "";
+    }
+
+    public class Priority
+    {
+        public string Name { get; set; } = "";
+    }
+
+    public class Status
+    {
+        public string Name { get; set; } = "";
+    }
+
+    private List<Country> Countries = new()
+    {
+        new Country { Name = "Việt Nam" },
+        new Country { Name = "Hoa Kỳ" },
+        new Country { Name = "Nhật Bản" },
+        new Country { Name = "Hàn Quốc" },
+        new Country { Name = "Trung Quốc" }
+    };
+
+    private List<City> Cities = new()
+    {
+        new City { Name = "Hà Nội" },
+        new City { Name = "TP. Hồ Chí Minh" },
+        new City { Name = "Đà Nẵng" },
+        new City { Name = "Hải Phòng" },
+        new City { Name = "Cần Thơ" }
+    };
+
+    private List<Priority> Priorities = new()
+    {
+        new Priority { Name = "Thấp" },
+        new Priority { Name = "Trung bình" },
+        new Priority { Name = "Cao" },
+        new Priority { Name = "Khẩn cấp" }
+    };
+
+    private List<Status> Statuses = new()
+    {
+        new Status { Name = "Đang chờ" },
+        new Status { Name = "Đã xác nhận" },
+        new Status { Name = "Hoàn thành" },
+        new Status { Name = "Đã hủy" }
+    };
+}

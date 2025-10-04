@@ -1719,6 +1719,7 @@ D:\NetSource\BlazorSolution\bin\Debug\net8.0\C1.Blazor.DataPager.dll
 D:\NetSource\BlazorSolution\obj\Debug\net8.0\webcil\C1.Blazor.DataPager.wasm
 D:\NetSource\BlazorSolution\obj\Debug\net8.0\compressed\knoa1wzaso-2su9tntkc0.gz
 D:\NetSource\BlazorSolution\obj\Debug\net8.0\scopedcss\MsgBox\MessageBoxContainer.razor.rz.scp.css
-D:\NetSource\BlazorSolution\obj\Debug\net8.0\compressed\bdbr9bho3c-5wr3lvhqo1.gz
-D:\NetSource\BlazorSolution\obj\Debug\net8.0\compressed\52haj70o4t-d5iu8s9rem.gz
-D:\NetSource\BlazorSolution\obj\Debug\net8.0\compressed\zfidv08mdx-yak351rlcp.gz
+D:\NetSource\BlazorSolution\obj\Debug\net8.0\BlazorSolution.sourcelink.json
+D:\NetSource\BlazorSolution\obj\Debug\net8.0\compressed\bdbr9bho3c-nzhvjlffpl.gz
+D:\NetSource\BlazorSolution\obj\Debug\net8.0\compressed\52haj70o4t-gqsp9kaxz7.gz
+D:\NetSource\BlazorSolution\obj\Debug\net8.0\compressed\zfidv08mdx-vtxmi9831x.gz

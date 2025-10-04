@@ -1,0 +1,365 @@
+﻿@page "/form-demo"
+@using System.ComponentModel.DataAnnotations
+
+<div class="container mt-4">
+    <h3 class="mb-4">Demo Tất Cả Các Field Form Trong Blazor</h3>
+
+    <EditForm Model="@formModel" OnValidSubmit="@HandleValidSubmit" OnInvalidSubmit="@HandleInvalidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary class="alert alert-danger" />
+
+        <div class="row">
+        
+            <!-- Column 1 -->
+            <div class="col-md-6">
+                <!-- 1. InputText - Text input -->
+                <div class="mb-3">
+                    <label class="form-label">InputText (Text Input):</label>
+                    <InputText @bind-Value="formModel.Name" class="form-control" placeholder="Nhập tên của bạn" />
+                    <ValidationMessage For="@(() => formModel.Name)" class="text-danger" />
+                </div>
+
+                <!-- 3. InputNumber - Number input -->
+                <div class="mb-3">
+                    <label class="form-label">InputNumber (Integer):</label>
+                    <InputNumber @bind-Value="formModel.Age" class="form-control" placeholder="Nhập tuổi" />
+                    <ValidationMessage For="@(() => formModel.Age)" class="text-danger" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">InputNumber (Decimal):</label>
+                    <InputNumber @bind-Value="formModel.Salary" class="form-control" placeholder="Nhập lương" />
+                    <ValidationMessage For="@(() => formModel.Salary)" class="text-danger" />
+                </div>
+
+                <!-- 4. InputDate - Date picker -->
+                <div class="mb-3">
+                    <label class="form-label">InputDate (Date):</label>
+                    <InputDate @bind-Value="formModel.BirthDate" class="form-control" />
+                    <ValidationMessage For="@(() => formModel.BirthDate)" class="text-danger" />
+                </div>
+
+                <!-- 5. InputCheckbox - Checkbox -->
+                <div class="mb-3">
+                    <div class="form-check">
+                        <InputCheckbox @bind-Value="formModel.IsActive" class="form-check-input" id="isActive" />
+                        <label class="form-check-label" for="isActive">
+                            InputCheckbox: Đang hoạt động
+                        </label>
+                    </div>
+                </div>
+
+                <!-- 6. InputSelect - Dropdown/Select -->
+                <div class="mb-3">
+                    <label class="form-label">InputSelect (Dropdown):</label>
+                    <InputSelect @bind-Value="formModel.Country" class="form-select">
+                        <option value="">-- Chọn quốc gia --</option>
+                        <option value="VN">Việt Nam</option>
+                        <option value="US">Hoa Kỳ</option>
+                        <option value="JP">Nhật Bản</option>
+                        <option value="KR">Hàn Quốc</option>
+                    </InputSelect>
+                    <ValidationMessage For="@(() => formModel.Country)" class="text-danger" />
+                </div>
+
+                <!-- 7. InputRadio & InputRadioGroup - Radio buttons -->
+                <div class="mb-3">
+                    <label class="form-label">InputRadioGroup (Radio Buttons):</label>
+                    <InputRadioGroup @bind-Value="formModel.Gender">
+                        <div class="form-check">
+                            <InputRadio Value="@("Male")" class="form-check-input" id="male" />
+                            <label class="form-check-label" for="male">Nam</label>
+                        </div>
+                        <div class="form-check">
+                            <InputRadio Value="@("Female")" class="form-check-input" id="female" />
+                            <label class="form-check-label" for="female">Nữ</label>
+                        </div>
+                        <div class="form-check">
+                            <InputRadio Value="@("Other")" class="form-check-input" id="other" />
+                            <label class="form-check-label" for="other">Khác</label>
+                        </div>
+                    </InputRadioGroup>
+                    <ValidationMessage For="@(() => formModel.Gender)" class="text-danger" />
+                </div>
+            </div>
+
+            <!-- Column 2 -->
+            <div class="col-md-6">
+                <!-- 2. InputTextArea - Textarea -->
+                <div class="mb-3">
+                    <label class="form-label">InputTextArea (Textarea):</label>
+                    <InputTextArea @bind-Value="formModel.Description" class="form-control" rows="4" placeholder="Nhập mô tả" />
+                    <ValidationMessage For="@(() => formModel.Description)" class="text-danger" />
+                </div>
+
+                <!-- 8. InputFile - File upload -->
+                <div class="mb-3">
+                    <label class="form-label">InputFile (File Upload):</label>
+                    <InputFile OnChange="@HandleFileSelected" class="form-control" accept=".pdf,.doc,.docx" />
+                    @if (!string.IsNullOrEmpty(selectedFileName))
+                    {
+                        <small class="text-muted d-block mt-1">File đã chọn: @selectedFileName</small>
+                    }
+                </div>
+
+                <!-- 9. Custom Input: Email -->
+                <div class="mb-3">
+                    <label class="form-label">InputText type="email" (Email):</label>
+                    <InputText @bind-Value="formModel.Email" type="email" class="form-control" placeholder="email@example.com" />
+                    <ValidationMessage For="@(() => formModel.Email)" class="text-danger" />
+                </div>
+
+                <!-- 10. Custom Input: Password -->
+                <div class="mb-3">
+                    <label class="form-label">InputText type="password" (Password):</label>
+                    <InputText @bind-Value="formModel.Password" type="password" class="form-control" placeholder="Nhập mật khẩu" />
+                    <ValidationMessage For="@(() => formModel.Password)" class="text-danger" />
+                </div>
+
+                <!-- 11. Custom Input: URL -->
+                <div class="mb-3">
+                    <label class="form-label">InputText type="url" (URL):</label>
+                    <InputText @bind-Value="formModel.Website" type="url" class="form-control" placeholder="https://example.com" />
+                    <ValidationMessage For="@(() => formModel.Website)" class="text-danger" />
+                </div>
+
+                <!-- 12. Custom Input: Tel -->
+                <div class="mb-3">
+                    <label class="form-label">InputText type="tel" (Phone):</label>
+                    <InputText @bind-Value="formModel.Phone" type="tel" class="form-control" placeholder="0123456789" />
+                    <ValidationMessage For="@(() => formModel.Phone)" class="text-danger" />
+                </div>
+
+                <!-- 13. Custom Input: Color -->
+                <div class="mb-3">
+                    <label class="form-label">InputText type="color" (Color Picker):</label>
+                    <InputText @bind-Value="formModel.FavoriteColor" type="color" class="form-control form-control-color" />
+                </div>
+
+                <!-- 14. Custom Input: Range -->
+                <div class="mb-3">
+                    <label class="form-label">InputNumber type="range" (Slider): @formModel.Rating</label>
+                    <InputNumber @bind-Value="formModel.Rating" type="range" min="1" max="10" class="form-range" />
+                </div>
+
+                <!-- 15. Multiple Select -->
+                <div class="mb-3">
+                    <label class="form-label">Multiple Skills (Ctrl+Click để chọn nhiều):</label>
+                    <select @bind="formModel.Skills" multiple class="form-select" size="5">
+                        <option value="CSharp">C#</option>
+                        <option value="Blazor">Blazor</option>
+                        <option value="JavaScript">JavaScript</option>
+                        <option value="SQL">SQL</option>
+                        <option value="Python">Python</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="row">
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary me-2">Submit Form</button>
+                <button type="button" class="btn btn-secondary" @onclick="ResetForm">Reset</button>
+            </div>
+        </div>
+</EditForm>
+
+
+    @if (formSubmitted)
+    {
+        <div class="card border-success mt-4">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">✓ Form đã submit thành công!</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><strong>Name:</strong> <span class="text-primary">@formModel.Name</span></li>
+                            <li class="mb-2"><strong>Age:</strong> <span class="text-primary">@formModel.Age</span></li>
+                            <li class="mb-2"><strong>Salary:</strong> <span class="text-primary">@formModel.Salary?.ToString("C")</span></li>
+                            <li class="mb-2"><strong>Birth Date:</strong> <span class="text-primary">@formModel.BirthDate?.ToString("dd/MM/yyyy")</span></li>
+                            <li class="mb-2"><strong>Is Active:</strong> <span class="text-primary">@formModel.IsActive</span></li>
+                            <li class="mb-2"><strong>Country:</strong> <span class="text-primary">@formModel.Country</span></li>
+                            <li class="mb-2"><strong>Gender:</strong> <span class="text-primary">@formModel.Gender</span></li>
+                            <li class="mb-2"><strong>Email:</strong> <span class="text-primary">@formModel.Email</span></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><strong>Phone:</strong> <span class="text-primary">@formModel.Phone</span></li>
+                            <li class="mb-2"><strong>Website:</strong> <span class="text-primary">@formModel.Website</span></li>
+                            <li class="mb-2"><strong>Description:</strong> <span class="text-primary">@formModel.Description</span></li>
+                            <li class="mb-2"><strong>Favorite Color:</strong> <span class="text-primary">@formModel.FavoriteColor</span></li>
+                            <li class="mb-2"><strong>Rating:</strong> <span class="text-primary">@formModel.Rating</span></li>
+                            <li class="mb-2"><strong>Skills:</strong> <span class="text-primary">@formModel.Skills</span></li>
+                            <li class="mb-2"><strong>File:</strong> <span class="text-primary">@selectedFileName</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (formInvalid)
+    {
+        <div class="card border-danger mt-4">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0">✗ Form validation failed!</h5>
+            </div>
+            <div class="card-body">
+                <p class="mb-3">Các giá trị hiện tại đang bind trong form:</p>
+                <div class="row">
+                    <div class="col-md-6">
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><strong>Name:</strong> <code>@(string.IsNullOrEmpty(formModel.Name) ? "(empty)" : formModel.Name)</code></li>
+                            <li class="mb-2"><strong>Age:</strong> <code>@formModel.Age</code></li>
+                            <li class="mb-2"><strong>Salary:</strong> <code>@(formModel.Salary?.ToString() ?? "(null)")</code></li>
+                            <li class="mb-2"><strong>Birth Date:</strong> <code>@(formModel.BirthDate?.ToString("dd/MM/yyyy") ?? "(null)")</code></li>
+                            <li class="mb-2"><strong>Is Active:</strong> <code>@formModel.IsActive</code></li>
+                            <li class="mb-2"><strong>Country:</strong> <code>@(string.IsNullOrEmpty(formModel.Country) ? "(empty)" : formModel.Country)</code></li>
+                            <li class="mb-2"><strong>Gender:</strong> <code>@(string.IsNullOrEmpty(formModel.Gender) ? "(empty)" : formModel.Gender)</code></li>
+                            <li class="mb-2"><strong>Email:</strong> <code>@(string.IsNullOrEmpty(formModel.Email) ? "(empty)" : formModel.Email)</code></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><strong>Password:</strong> <code>@(string.IsNullOrEmpty(formModel.Password) ? "(empty)" : "***")</code></li>
+                            <li class="mb-2"><strong>Phone:</strong> <code>@(string.IsNullOrEmpty(formModel.Phone) ? "(empty)" : formModel.Phone)</code></li>
+                            <li class="mb-2"><strong>Website:</strong> <code>@(string.IsNullOrEmpty(formModel.Website) ? "(empty)" : formModel.Website)</code></li>
+                            <li class="mb-2"><strong>Description:</strong> <code>@(string.IsNullOrEmpty(formModel.Description) ? "(empty)" : formModel.Description)</code></li>
+                            <li class="mb-2"><strong>Favorite Color:</strong> <code>@formModel.FavoriteColor</code></li>
+                            <li class="mb-2"><strong>Rating:</strong> <code>@formModel.Rating</code></li>
+                            <li class="mb-2"><strong>Skills:</strong> <code>@(string.IsNullOrEmpty(formModel.Skills) ? "(empty)" : formModel.Skills)</code></li>
+                            <li class="mb-2"><strong>File:</strong> <code>@(string.IsNullOrEmpty(selectedFileName) ? "(no file)" : selectedFileName)</code></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private FormModel formModel = new FormModel();
+    private bool formSubmitted = false;
+    private bool formInvalid = false;
+    private string selectedFileName = string.Empty;
+
+    public class FormModel
+    {
+        [Required(ErrorMessage = "Tên là bắt buộc")]
+        [StringLength(50, MinimumLength = 2, ErrorMessage = "Tên phải từ 2-50 ký tự")]
+        public string Name { get; set; } = string.Empty;
+
+        [StringLength(500, ErrorMessage = "Mô tả không quá 500 ký tự")]
+        public string Description { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Tuổi là bắt buộc")]
+        [Range(1, 120, ErrorMessage = "Tuổi phải từ 1-120")]
+        public int Age { get; set; }
+
+        [Range(0, 999999999, ErrorMessage = "Lương phải lớn hơn 0")]
+        public decimal? Salary { get; set; }
+
+        [Required(ErrorMessage = "Ngày sinh là bắt buộc")]
+        public DateTime? BirthDate { get; set; } = DateTime.Today;
+
+        public bool IsActive { get; set; } = true;
+
+        [Required(ErrorMessage = "Vui lòng chọn quốc gia")]
+        public string Country { get; set; } = "VN"; // Giá trị mặc định
+
+        [Required(ErrorMessage = "Vui lòng chọn giới tính")]
+        public string Gender { get; set; } = "Male";
+
+        [Required(ErrorMessage = "Email là bắt buộc")]
+        [EmailAddress(ErrorMessage = "Email không hợp lệ")]
+        public string Email { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Mật khẩu là bắt buộc")]
+        [StringLength(100, MinimumLength = 6, ErrorMessage = "Mật khẩu phải từ 6-100 ký tự")]
+        public string Password { get; set; } = string.Empty;
+
+        [Url(ErrorMessage = "URL không hợp lệ")]
+        public string Website { get; set; } = string.Empty;
+
+        [Phone(ErrorMessage = "Số điện thoại không hợp lệ")]
+        public string Phone { get; set; } = string.Empty;
+
+        public string FavoriteColor { get; set; } = "#0000ff";
+
+        [Range(1, 10, ErrorMessage = "Rating phải từ 1-10")]
+        public int Rating { get; set; } = 5;
+
+        public string Skills { get; set; } = string.Empty;
+    }
+
+    private void HandleValidSubmit()
+    {
+        formSubmitted = true;
+        formInvalid = false;
+        
+        // Log dữ liệu khi submit thành công
+        Console.WriteLine("=== FORM SUBMITTED SUCCESSFULLY ===");
+        Console.WriteLine($"Name: {formModel.Name}");
+        Console.WriteLine($"Description: {formModel.Description}");
+        Console.WriteLine($"Age: {formModel.Age}");
+        Console.WriteLine($"Salary: {formModel.Salary}");
+        Console.WriteLine($"BirthDate: {formModel.BirthDate}");
+        Console.WriteLine($"IsActive: {formModel.IsActive}");
+        Console.WriteLine($"Country: {formModel.Country}");
+        Console.WriteLine($"Gender: {formModel.Gender}");
+        Console.WriteLine($"Email: {formModel.Email}");
+        Console.WriteLine($"Phone: {formModel.Phone}");
+        Console.WriteLine($"Website: {formModel.Website}");
+        Console.WriteLine($"FavoriteColor: {formModel.FavoriteColor}");
+        Console.WriteLine($"Rating: {formModel.Rating}");
+        Console.WriteLine($"Skills: {formModel.Skills}");
+        Console.WriteLine($"File: {selectedFileName}");
+        Console.WriteLine("===================================");
+    }
+
+    private void HandleInvalidSubmit()
+    {
+        formSubmitted = false;
+        formInvalid = true;
+        
+        // Log các giá trị đang bind khi submit invalid
+        Console.WriteLine("=== FORM VALIDATION FAILED ===");
+        Console.WriteLine("Current bound values:");
+        Console.WriteLine($"Name: '{formModel.Name}' (Length: {formModel.Name?.Length ?? 0})");
+        Console.WriteLine($"Description: '{formModel.Description}' (Length: {formModel.Description?.Length ?? 0})");
+        Console.WriteLine($"Age: {formModel.Age}");
+        Console.WriteLine($"Salary: {formModel.Salary}");
+        Console.WriteLine($"BirthDate: {formModel.BirthDate}");
+        Console.WriteLine($"IsActive: {formModel.IsActive}");
+        Console.WriteLine($"Country: '{formModel.Country}'");
+        Console.WriteLine($"Gender: '{formModel.Gender}'");
+        Console.WriteLine($"Email: '{formModel.Email}'");
+        Console.WriteLine($"Password: '{(string.IsNullOrEmpty(formModel.Password) ? "" : "***")}' (Length: {formModel.Password?.Length ?? 0})");
+        Console.WriteLine($"Phone: '{formModel.Phone}'");
+        Console.WriteLine($"Website: '{formModel.Website}'");
+        Console.WriteLine($"FavoriteColor: '{formModel.FavoriteColor}'");
+        Console.WriteLine($"Rating: {formModel.Rating}");
+        Console.WriteLine($"Skills: '{formModel.Skills}'");
+        Console.WriteLine($"File: '{selectedFileName}'");
+        Console.WriteLine("==============================");
+    }
+
+    private void ResetForm()
+    {
+        formModel = new FormModel();
+        formSubmitted = false;
+        formInvalid = false;
+        selectedFileName = string.Empty;
+    }
+
+    private void HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        selectedFileName = e.File.Name;
+        Console.WriteLine($"File selected: {selectedFileName}");
+    }
+}
+

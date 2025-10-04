@@ -59,6 +59,10 @@
               "target": "Package",
               "version": "[9.0.20251.1134, )"
             },
+            "C1.Blazor.DateTimeEditors": {
+              "target": "Package",
+              "version": "[9.0.20251.1134, )"
+            },
             "C1.Blazor.Grid": {
               "target": "Package",
               "version": "[9.0.20251.1134, )"

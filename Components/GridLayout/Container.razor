@@ -1,0 +1,71 @@
+﻿@* Container Component - Tương tự MUI Container *@
+
+<div class="@GetContainerClass()" style="@GetContainerStyle()" @attributes="AdditionalAttributes">
+    @ChildContent
+</div>
+
+@code {
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public string MaxWidth { get; set; } = "lg"; // xs, sm, md, lg, xl, xxl, fluid
+
+    [Parameter]
+    public bool Fixed { get; set; } = false;
+
+    [Parameter]
+    public bool DisableGutters { get; set; } = false;
+
+    [Parameter]
+    public string? Class { get; set; }
+
+    [Parameter]
+    public string? Style { get; set; }
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object>? AdditionalAttributes { get; set; }
+
+    private string GetContainerClass()
+    {
+        var classes = new List<string>();
+
+        if (MaxWidth == "fluid")
+        {
+            classes.Add("container-fluid");
+        }
+        else if (Fixed)
+        {
+            classes.Add($"container-{MaxWidth}");
+        }
+        else
+        {
+            classes.Add("container");
+        }
+
+        if (!string.IsNullOrEmpty(Class))
+        {
+            classes.Add(Class);
+        }
+
+        return string.Join(" ", classes);
+    }
+
+    private string? GetContainerStyle()
+    {
+        var styles = new List<string>();
+
+        if (DisableGutters)
+        {
+            styles.Add("padding-left: 0");
+            styles.Add("padding-right: 0");
+        }
+
+        if (!string.IsNullOrEmpty(Style))
+        {
+            styles.Add(Style);
+        }
+
+        return styles.Count > 0 ? string.Join("; ", styles) : null;
+    }
+}

@@ -1,0 +1,162 @@
+﻿@page "/grid-test"
+
+<h2>Layout Components Examples</h2>
+
+@* Example 1: Container *@
+<h3 class="mt-4">Container Example</h3>
+<Container MaxWidth="lg" Class="bg-light">
+    <Box P="3">
+        <h4>Container with MaxWidth="lg"</h4>
+        <p>This is a container component with max-width set to large.</p>
+    </Box>
+</Container>
+
+@* Example 2: Grid System *@
+<h3 class="mt-4">Grid System Example</h3>
+<Container>
+    <Grid Container="true" Spacing="3">
+        <Grid Item="true" Xs="12" Md="6">
+            <Box P="3" Bg="primary" Color="white" BorderRadius="2">
+                <h5>Column 1</h5>
+                <p>Full width on mobile, half on desktop</p>
+            </Box>
+        </Grid>
+        <Grid Item="true" Xs="12" Md="6">
+            <Box P="3" Bg="secondary" Color="white" BorderRadius="2">
+                <h5>Column 2</h5>
+                <p>Full width on mobile, half on desktop</p>
+            </Box>
+        </Grid>
+        <Grid Item="true" Xs="12" Md="4">
+            <Box P="3" Bg="success" Color="white" BorderRadius="2">
+                <p>1/3 on desktop</p>
+            </Box>
+        </Grid>
+        <Grid Item="true" Xs="12" Md="4">
+            <Box P="3" Bg="danger" Color="white" BorderRadius="2">
+                <p>1/3 on desktop</p>
+            </Box>
+        </Grid>
+        <Grid Item="true" Xs="12" Md="4">
+            <Box P="3" Bg="warning" Color="white" BorderRadius="2">
+                <p>1/3 on desktop</p>
+            </Box>
+        </Grid>
+    </Grid>
+</Container>
+
+@* Example 3: Stack Vertical *@
+<h3 class="mt-4">Stack Vertical Example</h3>
+<Container>
+    <Stack Direction="column" Spacing="3">
+        <Box P="3" Bg="light" Border="true" BorderRadius="2">
+            Item 1
+        </Box>
+        <Box P="3" Bg="light" Border="true" BorderRadius="2">
+            Item 2
+        </Box>
+        <Box P="3" Bg="light" Border="true" BorderRadius="2">
+            Item 3
+        </Box>
+    </Stack>
+</Container>
+
+@* Example 4: Stack Horizontal *@
+<h3 class="mt-4">Stack Horizontal Example</h3>
+<Container>
+    <Stack Direction="row" Spacing="3" JustifyContent="center" AlignItems="center">
+        <Box P="3" Bg="primary" Color="white" BorderRadius="2">
+            Button 1
+        </Box>
+        <Box P="3" Bg="secondary" Color="white" BorderRadius="2">
+            Button 2
+        </Box>
+        <Box P="3" Bg="success" Color="white" BorderRadius="2">
+            Button 3
+        </Box>
+    </Stack>
+</Container>
+
+@* Example 5: Box with Flexbox *@
+<h3 class="mt-4">Box Flexbox Example</h3>
+<Container>
+    <Box Display="flex" JustifyContent="between" AlignItems="center" P="3" Bg="light" Border="true" BorderRadius="2">
+        <Box>
+            <h5 class="mb-0">Title</h5>
+            <small class="text-muted">Subtitle</small>
+        </Box>
+        <Box Display="flex" Gap="2">
+            <Box P="2" Bg="primary" Color="white" BorderRadius="1">
+                Action 1
+            </Box>
+            <Box P="2" Bg="secondary" Color="white" BorderRadius="1">
+                Action 2
+            </Box>
+        </Box>
+    </Box>
+</Container>
+
+@* Example 6: Complex Layout *@
+<h3 class="mt-4">Complex Layout Example</h3>
+<Container MaxWidth="xl">
+    <Grid Container="true" Spacing="4">
+        <Grid Item="true" Xs="12" Md="3">
+            <Box Bg="light" P="3" Height="100%" BorderRadius="2">
+                <h5>Sidebar</h5>
+                <Stack Direction="column" Spacing="2">
+                    <Box P="2" Bg="white" Border="true" BorderRadius="1">Menu 1</Box>
+                    <Box P="2" Bg="white" Border="true" BorderRadius="1">Menu 2</Box>
+                    <Box P="2" Bg="white" Border="true" BorderRadius="1">Menu 3</Box>
+                </Stack>
+            </Box>
+        </Grid>
+        <Grid Item="true" Xs="12" Md="9">
+            <Box Bg="light" P="3" Height="100%" BorderRadius="2">
+                <h5>Main Content</h5>
+                <Grid Container="true" Spacing="3">
+                    <Grid Item="true" Xs="12" Sm="6" Lg="4">
+                        <Box P="3" Bg="white" Shadow="sm" BorderRadius="2">
+                            <h6>Card 1</h6>
+                            <p>Content here</p>
+                        </Box>
+                    </Grid>
+                    <Grid Item="true" Xs="12" Sm="6" Lg="4">
+                        <Box P="3" Bg="white" Shadow="sm" BorderRadius="2">
+                            <h6>Card 2</h6>
+                            <p>Content here</p>
+                        </Box>
+                    </Grid>
+                    <Grid Item="true" Xs="12" Sm="6" Lg="4">
+                        <Box P="3" Bg="white" Shadow="sm" BorderRadius="2">
+                            <h6>Card 3</h6>
+                            <p>Content here</p>
+                        </Box>
+                    </Grid>
+                </Grid>
+            </Box>
+        </Grid>
+    </Grid>
+</Container>
+
+@* Example 7: Responsive Stack *@
+<h3 class="mt-4">Responsive Design Example</h3>
+<Container>
+    <Box Display="flex" FlexDirection="column" Gap="3" Class="flex-md-row">
+        <Box Flex="1" P="4" Bg="primary" Color="white" BorderRadius="2">
+            <h5>Responsive Box 1</h5>
+            <p>Stacks vertically on mobile, horizontal on desktop</p>
+        </Box>
+        <Box Flex="1" P="4" Bg="success" Color="white" BorderRadius="2">
+            <h5>Responsive Box 2</h5>
+            <p>Automatically adjusts layout</p>
+        </Box>
+        <Box Flex="1" P="4" Bg="info" Color="white" BorderRadius="2">
+            <h5>Responsive Box 3</h5>
+            <p>Bootstrap responsive utilities</p>
+        </Box>
+    </Box>
+</Container>
+
+@code {
+    // Component logic here if needed
+}

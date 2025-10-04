@@ -8448,6 +8448,7 @@
     "net8.0": [
       "C1.Blazor.Core >= 9.0.20251.1134",
       "C1.Blazor.DataPager >= 9.0.20251.1134",
+      "C1.Blazor.DateTimeEditors >= 9.0.20251.1134",
       "C1.Blazor.Grid >= 9.0.20251.1134",
       "C1.Blazor.Input >= 9.0.20251.1134",
       "CommunityToolkit.Mvvm >= 8.4.0",
@@ -8517,6 +8518,10 @@
             "version": "[9.0.20251.1134, )"
           },
           "C1.Blazor.DataPager": {
+            "target": "Package",
+            "version": "[9.0.20251.1134, )"
+          },
+          "C1.Blazor.DateTimeEditors": {
             "target": "Package",
             "version": "[9.0.20251.1134, )"
           },

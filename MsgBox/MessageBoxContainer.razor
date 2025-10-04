@@ -8,7 +8,9 @@
     @* ⭐ SỬA DỤNG PopupHeader và PopupContent THAY VÌ Header và WindowContent *@
     <C1Window @ref="messageWindow"
               Style="@windowStyle"
-              IsModeless="false">
+              IsModeless="false"
+              IsDarkOverlay="false"
+    >
         <PopupHeader>
             @* ⭐ HEADER CONTENT *@
             <div class="d-flex align-items-center gap-2 @GetHeaderBgClass()" style="padding: 0.5rem 0;">

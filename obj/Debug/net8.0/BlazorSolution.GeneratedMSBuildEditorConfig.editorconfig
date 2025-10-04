@@ -41,8 +41,40 @@ build_property.EnableCodeStyleSeverity =
 build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/NetSource/BlazorSolution/Components/GridLayout/Box.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xHcmlkTGF5b3V0XEJveC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/NetSource/BlazorSolution/Components/GridLayout/Container.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xHcmlkTGF5b3V0XENvbnRhaW5lci5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/NetSource/BlazorSolution/Components/GridLayout/Grid.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xHcmlkTGF5b3V0XEdyaWQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/NetSource/BlazorSolution/Components/GridLayout/Stack.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xHcmlkTGF5b3V0XFN0YWNrLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/NetSource/BlazorSolution/Pages/BlazorFormDemo.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQmxhem9yRm9ybURlbW8ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/NetSource/BlazorSolution/Pages/ComboboxDemo.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tYm9ib3hEZW1vLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/NetSource/BlazorSolution/Pages/Counter.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ291bnRlci5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/NetSource/BlazorSolution/Pages/ExampleGrid.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRXhhbXBsZUdyaWQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/NetSource/BlazorSolution/Pages/GridTest.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcR3JpZFRlc3QucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/NetSource/BlazorSolution/Pages/Home.razor]
@@ -55,6 +87,14 @@ build_metadata.AdditionalFiles.CssScope =
 
 [D:/NetSource/BlazorSolution/Pages/MessageBoxDemoV2.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTWVzc2FnZUJveERlbW9WMi5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/NetSource/BlazorSolution/Pages/SearchFilterForm.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2VhcmNoRmlsdGVyRm9ybS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/NetSource/BlazorSolution/Pages/UserForm.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVXNlckZvcm0ucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/NetSource/BlazorSolution/Pages/Weather.razor]

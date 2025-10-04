@@ -1,0 +1,352 @@
+﻿@* Box Component - Tương tự MUI Box *@
+
+<div class="@GetBoxClass()" style="@GetBoxStyle()" @attributes="AdditionalAttributes">
+    @ChildContent
+</div>
+
+@code {
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public string Component { get; set; } = "div"; // div, span, section, article, etc.
+
+    // Spacing
+    [Parameter]
+    public int? M { get; set; } // Margin all
+
+    [Parameter]
+    public int? Mt { get; set; } // Margin top
+
+    [Parameter]
+    public int? Mr { get; set; } // Margin right
+
+    [Parameter]
+    public int? Mb { get; set; } // Margin bottom
+
+    [Parameter]
+    public int? Ml { get; set; } // Margin left
+
+    [Parameter]
+    public int? Mx { get; set; } // Margin horizontal
+
+    [Parameter]
+    public int? My { get; set; } // Margin vertical
+
+    [Parameter]
+    public int? P { get; set; } // Padding all
+
+    [Parameter]
+    public int? Pt { get; set; } // Padding top
+
+    [Parameter]
+    public int? Pr { get; set; } // Padding right
+
+    [Parameter]
+    public int? Pb { get; set; } // Padding bottom
+
+    [Parameter]
+    public int? Pl { get; set; } // Padding left
+
+    [Parameter]
+    public int? Px { get; set; } // Padding horizontal
+
+    [Parameter]
+    public int? Py { get; set; } // Padding vertical
+
+    // Display
+    [Parameter]
+    public string? Display { get; set; } // none, inline, block, flex, grid, etc.
+
+    // Flexbox
+    [Parameter]
+    public string? JustifyContent { get; set; }
+
+    [Parameter]
+    public string? AlignItems { get; set; }
+
+    [Parameter]
+    public string? FlexDirection { get; set; }
+
+    [Parameter]
+    public string? FlexWrap { get; set; }
+
+    [Parameter]
+    public int? Flex { get; set; }
+
+    [Parameter]
+    public int? Gap { get; set; }
+
+    // Sizing
+    [Parameter]
+    public string? Width { get; set; }
+
+    [Parameter]
+    public string? Height { get; set; }
+
+    [Parameter]
+    public string? MinWidth { get; set; }
+
+    [Parameter]
+    public string? MinHeight { get; set; }
+
+    [Parameter]
+    public string? MaxWidth { get; set; }
+
+    [Parameter]
+    public string? MaxHeight { get; set; }
+
+    // Colors
+    [Parameter]
+    public string? Bg { get; set; } // Background color (Bootstrap color)
+
+    [Parameter]
+    public string? Color { get; set; } // Text color (Bootstrap color)
+
+    // Border
+    [Parameter]
+    public bool Border { get; set; } = false;
+
+    [Parameter]
+    public string? BorderColor { get; set; }
+
+    [Parameter]
+    public int? BorderRadius { get; set; }
+
+    // Position
+    [Parameter]
+    public string? Position { get; set; } // static, relative, absolute, fixed, sticky
+
+    [Parameter]
+    public string? Top { get; set; }
+
+    [Parameter]
+    public string? Right { get; set; }
+
+    [Parameter]
+    public string? Bottom { get; set; }
+
+    [Parameter]
+    public string? Left { get; set; }
+
+    // Overflow
+    [Parameter]
+    public string? Overflow { get; set; }
+
+    [Parameter]
+    public string? OverflowX { get; set; }
+
+    [Parameter]
+    public string? OverflowY { get; set; }
+
+    // Text
+    [Parameter]
+    public string? TextAlign { get; set; }
+
+    [Parameter]
+    public string? FontWeight { get; set; }
+
+    [Parameter]
+    public string? FontSize { get; set; }
+
+    // Shadow
+    [Parameter]
+    public string? Shadow { get; set; } // sm, default, lg
+
+    [Parameter]
+    public string? Class { get; set; }
+
+    [Parameter]
+    public string? Style { get; set; }
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object>? AdditionalAttributes { get; set; }
+
+    private string GetBoxClass()
+    {
+        var classes = new List<string>();
+
+        // Spacing - Margin
+        if (M.HasValue) classes.Add($"m-{M}");
+        if (Mt.HasValue) classes.Add($"mt-{Mt}");
+        if (Mr.HasValue) classes.Add($"me-{Mr}");
+        if (Mb.HasValue) classes.Add($"mb-{Mb}");
+        if (Ml.HasValue) classes.Add($"ms-{Ml}");
+        if (Mx.HasValue) classes.Add($"mx-{Mx}");
+        if (My.HasValue) classes.Add($"my-{My}");
+
+        // Spacing - Padding
+        if (P.HasValue) classes.Add($"p-{P}");
+        if (Pt.HasValue) classes.Add($"pt-{Pt}");
+        if (Pr.HasValue) classes.Add($"pe-{Pr}");
+        if (Pb.HasValue) classes.Add($"pb-{Pb}");
+        if (Pl.HasValue) classes.Add($"ps-{Pl}");
+        if (Px.HasValue) classes.Add($"px-{Px}");
+        if (Py.HasValue) classes.Add($"py-{Py}");
+
+        // Display
+        if (!string.IsNullOrEmpty(Display))
+        {
+            classes.Add($"d-{Display}");
+        }
+
+        // Flexbox
+        if (!string.IsNullOrEmpty(JustifyContent))
+        {
+            classes.Add($"justify-content-{JustifyContent}");
+        }
+        if (!string.IsNullOrEmpty(AlignItems))
+        {
+            classes.Add($"align-items-{AlignItems}");
+        }
+        if (!string.IsNullOrEmpty(FlexDirection))
+        {
+            classes.Add($"flex-{FlexDirection}");
+        }
+        if (!string.IsNullOrEmpty(FlexWrap))
+        {
+            classes.Add($"flex-{FlexWrap}");
+        }
+        if (Gap.HasValue)
+        {
+            classes.Add($"gap-{Gap}");
+        }
+
+        // Colors
+        if (!string.IsNullOrEmpty(Bg))
+        {
+            classes.Add($"bg-{Bg}");
+        }
+        if (!string.IsNullOrEmpty(Color))
+        {
+            classes.Add($"text-{Color}");
+        }
+
+        // Border
+        if (Border)
+        {
+            classes.Add("border");
+        }
+        if (!string.IsNullOrEmpty(BorderColor))
+        {
+            classes.Add($"border-{BorderColor}");
+        }
+        if (BorderRadius.HasValue)
+        {
+            classes.Add($"rounded-{BorderRadius}");
+        }
+
+        // Position
+        if (!string.IsNullOrEmpty(Position))
+        {
+            classes.Add($"position-{Position}");
+        }
+
+        // Overflow
+        if (!string.IsNullOrEmpty(Overflow))
+        {
+            classes.Add($"overflow-{Overflow}");
+        }
+
+        // Text
+        if (!string.IsNullOrEmpty(TextAlign))
+        {
+            classes.Add($"text-{TextAlign}");
+        }
+        if (!string.IsNullOrEmpty(FontWeight))
+        {
+            classes.Add($"fw-{FontWeight}");
+        }
+
+        // Shadow
+        if (!string.IsNullOrEmpty(Shadow))
+        {
+            classes.Add(Shadow == "default" ? "shadow" : $"shadow-{Shadow}");
+        }
+
+        if (!string.IsNullOrEmpty(Class))
+        {
+            classes.Add(Class);
+        }
+
+        return string.Join(" ", classes);
+    }
+
+    private string? GetBoxStyle()
+    {
+        var styles = new List<string>();
+
+        // Width/Height
+        if (!string.IsNullOrEmpty(Width))
+        {
+            styles.Add($"width: {Width}");
+        }
+        if (!string.IsNullOrEmpty(Height))
+        {
+            styles.Add($"height: {Height}");
+        }
+        if (!string.IsNullOrEmpty(MinWidth))
+        {
+            styles.Add($"min-width: {MinWidth}");
+        }
+        if (!string.IsNullOrEmpty(MinHeight))
+        {
+            styles.Add($"min-height: {MinHeight}");
+        }
+        if (!string.IsNullOrEmpty(MaxWidth))
+        {
+            styles.Add($"max-width: {MaxWidth}");
+        }
+        if (!string.IsNullOrEmpty(MaxHeight))
+        {
+            styles.Add($"max-height: {MaxHeight}");
+        }
+
+        // Flex
+        if (Flex.HasValue)
+        {
+            styles.Add($"flex: {Flex}");
+        }
+
+        // Position
+        if (!string.IsNullOrEmpty(Top))
+        {
+            styles.Add($"top: {Top}");
+        }
+        if (!string.IsNullOrEmpty(Right))
+        {
+            styles.Add($"right: {Right}");
+        }
+        if (!string.IsNullOrEmpty(Bottom))
+        {
+            styles.Add($"bottom: {Bottom}");
+        }
+        if (!string.IsNullOrEmpty(Left))
+        {
+            styles.Add($"left: {Left}");
+        }
+
+        // Overflow
+        if (!string.IsNullOrEmpty(OverflowX))
+        {
+            styles.Add($"overflow-x: {OverflowX}");
+        }
+        if (!string.IsNullOrEmpty(OverflowY))
+        {
+            styles.Add($"overflow-y: {OverflowY}");
+        }
+
+        // Font Size
+        if (!string.IsNullOrEmpty(FontSize))
+        {
+            styles.Add($"font-size: {FontSize}");
+        }
+
+        if (!string.IsNullOrEmpty(Style))
+        {
+            styles.Add(Style);
+        }
+
+        return styles.Count > 0 ? string.Join("; ", styles) : null;
+    }
+}

@@ -1,0 +1,56 @@
+﻿@page "/grid-test222"
+
+@using C1.Blazor.Input
+@using Model
+<div class="container-fluid">
+    <div class="row my-3">
+        <div class="col-md-2  d-flex flex-column" style="min-width: 100px;">
+            <label for="company-country" class="form-label min-vw-100">Company name</label>
+            <C1ComboBox @bind-SelectedItem="@country"
+                        ItemsSource="countries" 
+                        DisplayMemberPath="Name"
+                        ValueMemberPath="Code"
+                        T="Country" 
+                        Placeholder="Select a Country"
+                        class="form-control" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 bg-primary">
+            <InputFile/>
+        </div>
+    </div>
+    <div class="row my-2">
+        <div class="col-md-2 bg-primary p-0">
+            <span>master name</span>
+        </div>
+        <div class="col-md-4 offset-md-6 bg-success p-0">
+            <span>master name</span>
+        </div>
+    </div>
+</div>
+
+
+@if (country != null)
+{
+    <p>Bạn đã chọn: @country.Name (ID: @country.Code)</p>
+}
+
+@code
+{
+    List<Country> list;
+    IEnumerable<Country> countries;
+    Country country;
+
+    protected override void OnInitialized()
+    {
+        list = new()
+        {
+            new Country(){Code = "VN", Name = "Viet Nam"},
+            new Country(){Code = "US", Name = "Hoa Ky"},
+        };
+
+        countries = list;
+        country = list.First(c => c.Code == "VN");
+    }
+}

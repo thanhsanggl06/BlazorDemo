@@ -134,8 +134,8 @@ Welcome to your new app.
                 {
                     foreach(var errMessage in propErrs)
                     {
-                        await MessageBox.ErrorAsync("データの保存に失敗しました。");
                         ErrorDetails.Add(errMessage.ErrorMessage ?? "");
+                        await MessageBox.ErrorAsync(string.Join(Environment.NewLine, ErrorDetails));
                     }
                 }
             }

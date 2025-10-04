@@ -1,0 +1,325 @@
+﻿@page "/user-form"
+@using System.ComponentModel.DataAnnotations
+@using C1.Blazor.Input
+@using Microsoft.AspNetCore.Components.Forms
+
+<h3>Form Đăng Ký Người Dùng</h3>
+
+<EditForm EditContext="@editContext" OnValidSubmit="@HandleValidSubmit">
+
+    <div class="form-group mb-3">
+        <label>Họ và Tên:</label>
+        <C1TextBox @bind-Text="@userModel.FullName"
+                   Placeholder="Nhập họ và tên"
+                   Class="form-control" />
+        <ValidationMessage For="@(() => userModel.FullName)" />
+    </div>
+
+    <div class="form-group mb-3">
+        <label>Email:</label>
+        <C1TextBox @bind-Text="@userModel.Email"
+                   Placeholder="example@email.com"
+                   Class="form-control" />
+        <ValidationMessage For="@(() => userModel.Email)" />
+    </div>
+
+    <div class="form-group mb-3">
+        <label>Số Điện Thoại:</label>
+        <C1MaskedTextBox @bind-Text="@userModel.Phone"
+                         Mask="0000-000-000"
+                         Placeholder="0123-456-789"
+                         Class="form-control" />
+        <ValidationMessage For="@(() => userModel.Phone)" />
+    </div>
+
+    <div class="form-group mb-3">
+        <label>Mật Khẩu:</label>
+        <InputText @bind-Value="@userModel.Password"
+                   type="password"
+                   class="form-control"
+                   placeholder="Nhập mật khẩu" />
+        <ValidationMessage For="@(() => userModel.Password)" />
+    </div>
+
+    <div class="form-group mb-3">
+        <label>Xác Nhận Mật Khẩu:</label>
+        <InputText @bind-Value="@userModel.PasswordConfirmation"
+                   type="password"
+                   class="form-control"
+                   placeholder="Nhập lại mật khẩu" />
+        <ValidationMessage For="@(() => userModel.PasswordConfirmation)" />
+    </div>
+
+    <div class="form-group mb-3">
+        <label>Ngày Sinh:</label>
+        <InputDate @bind-Value="@userModel.BirthDate"
+                   class="form-control"
+                   max="@DateTime.Today.ToString("yyyy-MM-dd")" />
+        <ValidationMessage For="@(() => userModel.BirthDate)" />
+    </div>
+
+    <div class="form-group mb-3">
+        <label>Tuổi:</label>
+        <InputNumber @bind-Value="@userModel.Age"
+                     class="form-control"
+                     min="18"
+                     max="100" />
+        <ValidationMessage For="@(() => userModel.Age)" />
+    </div>
+
+    <div class="form-group mb-3">
+        <label>Giới Tính:</label>
+        <InputSelect @bind-Value="@userModel.Gender" class="form-control">
+            <option value="">-- Chọn giới tính --</option>
+            @foreach (var option in genderOptions)
+            {
+                <option value="@option.Value">@option.Text</option>
+            }
+        </InputSelect>
+        <ValidationMessage For="@(() => userModel.Gender)" />
+    </div>
+
+    <div class="form-group mb-3">
+        <label>Mô Tả:</label>
+        <InputTextArea @bind-Value="@userModel.Description"
+                       rows="4"
+                       placeholder="Nhập mô tả về bản thân"
+                       class="form-control" />
+        <ValidationMessage For="@(() => userModel.Description)" />
+    </div>
+
+    <div class="form-group mb-3">
+        <div class="form-check">
+            <InputCheckbox @bind-Value="@userModel.AcceptTerms" class="form-check-input" id="acceptTerms" />
+            <label class="form-check-label" for="acceptTerms">
+                Tôi đồng ý với các điều khoản và điều kiện
+            </label>
+        </div>
+        <ValidationMessage For="@(() => userModel.AcceptTerms)" />
+    </div>
+
+    <div class="mt-3">
+        <button type="submit" class="btn btn-primary" disabled="@(!editContext?.Validate() ?? true)">
+            Đăng Ký
+        </button>
+        <button type="button" class="btn btn-secondary ms-2" @onclick="ResetForm">Xóa Form</button>
+    </div>
+</EditForm>
+
+@if (submitted)
+{
+    <div class="alert alert-success mt-3">
+        <h4>Đăng ký thành công!</h4>
+        <p><strong>Họ tên:</strong> @userModel.FullName</p>
+        <p><strong>Email:</strong> @userModel.Email</p>
+        <p><strong>Tuổi:</strong> @userModel.Age</p>
+    </div>
+}
+
+@code {
+    private UserModel userModel = new();
+    private EditContext? editContext;
+    private ValidationMessageStore? messageStore;
+    private bool submitted = false;
+
+    private List<GenderOption> genderOptions = new()
+    {
+        new GenderOption { Value = "Male", Text = "Nam" },
+        new GenderOption { Value = "Female", Text = "Nữ" },
+        new GenderOption { Value = "Other", Text = "Khác" }
+    };
+
+    protected override void OnInitialized()
+    {
+        userModel = new UserModel();
+        editContext = new EditContext(userModel);
+        messageStore = new ValidationMessageStore(editContext);
+
+        // Validate từng field khi thay đổi
+        editContext.OnFieldChanged += HandleFieldChanged;
+
+        // Validate toàn bộ khi submit
+        editContext.OnValidationRequested += HandleValidationRequested;
+
+        // Custom CSS cho validation
+        editContext.SetFieldCssClassProvider(new CustomFieldClassProvider());
+    }
+
+    private void HandleFieldChanged(object? sender, FieldChangedEventArgs args)
+    {
+        // Chỉ clear và validate field đang thay đổi
+        var fieldIdentifier = args.FieldIdentifier;
+        messageStore?.Clear(fieldIdentifier);
+
+        // Validate field đang thay đổi bằng DataAnnotations
+        var propertyInfo = fieldIdentifier.Model.GetType().GetProperty(fieldIdentifier.FieldName);
+        if (propertyInfo != null)
+        {
+            var propertyValue = propertyInfo.GetValue(fieldIdentifier.Model);
+            var validationContext = new ValidationContext(fieldIdentifier.Model)
+            {
+                MemberName = fieldIdentifier.FieldName
+            };
+
+            var validationResults = new List<ValidationResult>();
+            Validator.TryValidateProperty(propertyValue, validationContext, validationResults);
+
+            foreach (var validationResult in validationResults)
+            {
+                messageStore?.Add(fieldIdentifier, validationResult.ErrorMessage ?? "Validation error");
+            }
+        }
+
+        // Custom validation cho password confirmation
+        if (fieldIdentifier.FieldName == nameof(UserModel.PasswordConfirmation))
+        {
+            if (userModel?.PasswordConfirmation != userModel?.Password &&
+                !string.IsNullOrEmpty(userModel?.PasswordConfirmation))
+            {
+                messageStore?.Add(() => userModel.PasswordConfirmation!, "Mật khẩu xác nhận không khớp.");
+            }
+        }
+
+        if (fieldIdentifier.FieldName == nameof(UserModel.Password))
+        {
+            if (!string.IsNullOrEmpty(userModel?.PasswordConfirmation) &&
+                userModel?.PasswordConfirmation != userModel?.Password)
+            {
+                messageStore?.Clear(() => userModel.PasswordConfirmation!);
+                messageStore?.Add(() => userModel.PasswordConfirmation!, "Mật khẩu xác nhận không khớp.");
+            }
+            else if (!string.IsNullOrEmpty(userModel?.PasswordConfirmation))
+            {
+                messageStore?.Clear(() => userModel.PasswordConfirmation!);
+            }
+        }
+
+        editContext?.NotifyValidationStateChanged();
+    }
+
+    private void HandleValidationRequested(object? sender, ValidationRequestedEventArgs args)
+    {
+        messageStore?.Clear();
+
+        // Validate toàn bộ model khi submit
+        var validationContext = new ValidationContext(userModel!);
+        var validationResults = new List<ValidationResult>();
+        Validator.TryValidateObject(userModel!, validationContext, validationResults, true);
+
+        foreach (var validationResult in validationResults)
+        {
+            foreach (var memberName in validationResult.MemberNames)
+            {
+                messageStore?.Add(editContext!.Field(memberName), validationResult.ErrorMessage ?? "Validation error");
+            }
+        }
+
+        // Custom validation cho password
+        if (userModel?.PasswordConfirmation != userModel?.Password)
+        {
+            messageStore?.Add(() => userModel.PasswordConfirmation!, "Mật khẩu xác nhận không khớp.");
+        }
+
+        editContext?.NotifyValidationStateChanged();
+    }
+
+    private void HandleValidSubmit()
+    {
+        submitted = true;
+        StateHasChanged();
+    }
+
+    private void ResetForm()
+    {
+        userModel = new UserModel();
+        editContext = new EditContext(userModel);
+        messageStore = new ValidationMessageStore(editContext);
+        editContext.OnFieldChanged += HandleFieldChanged;
+        editContext.SetFieldCssClassProvider(new CustomFieldClassProvider());
+        submitted = false;
+        StateHasChanged();
+    }
+
+    public class UserModel
+    {
+        [Required(ErrorMessage = "Họ và tên là bắt buộc")]
+        [StringLength(100, MinimumLength = 3, ErrorMessage = "Họ tên phải có từ 3-100 ký tự")]
+        public string? FullName { get; set; }
+
+        [Required(ErrorMessage = "Email là bắt buộc")]
+        [EmailAddress(ErrorMessage = "Email không hợp lệ")]
+        public string? Email { get; set; }
+
+        [Required(ErrorMessage = "Số điện thoại là bắt buộc")]
+        [RegularExpression(@"^\d{4}-\d{3}-\d{3}$", ErrorMessage = "Số điện thoại không đúng định dạng")]
+        public string? Phone { get; set; }
+
+        [Required(ErrorMessage = "Mật khẩu là bắt buộc")]
+        [StringLength(24, MinimumLength = 8, ErrorMessage = "Mật khẩu phải có từ 8-24 ký tự")]
+        public string? Password { get; set; }
+
+        [Required(ErrorMessage = "Xác nhận mật khẩu là bắt buộc")]
+        public string? PasswordConfirmation { get; set; }
+
+        [Required(ErrorMessage = "Ngày sinh là bắt buộc")]
+        public DateTime? BirthDate { get; set; }
+
+        [Range(18, 100, ErrorMessage = "Tuổi phải từ 18-100")]
+        public int Age { get; set; }
+
+        [Required(ErrorMessage = "Vui lòng chọn giới tính")]
+        public string? Gender { get; set; }
+
+        [StringLength(500, ErrorMessage = "Mô tả không được quá 500 ký tự")]
+        public string? Description { get; set; }
+
+        [Range(typeof(bool), "true", "true", ErrorMessage = "Bạn phải đồng ý với điều khoản")]
+        public bool AcceptTerms { get; set; }
+    }
+
+    public class GenderOption
+    {
+        public string Value { get; set; } = string.Empty;
+        public string Text { get; set; } = string.Empty;
+    }
+
+    // Custom CSS class provider
+    public class CustomFieldClassProvider : FieldCssClassProvider
+    {
+        public override string GetFieldCssClass(EditContext editContext, in FieldIdentifier fieldIdentifier)
+        {
+            var hasValidationMessages = editContext.GetValidationMessages(fieldIdentifier).Any();
+
+            // Chỉ hiển thị border khi có validation message
+            // Không hiển thị gì khi field chưa được validate
+            if (hasValidationMessages)
+            {
+                return "invalid-field";
+            }
+
+            return string.Empty;
+        }
+    }
+}
+
+<style>
+    .form-group label {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .validation-message {
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+
+    .valid-field {
+        border: 2px solid #28a745 !important;
+    }
+
+    .invalid-field {
+        border: 2px solid #dc3545 !important;
+    }
+</style>

@@ -222,16 +222,26 @@ Welcome to your new app.
                     isAscending = true;
                 }
 
-                // ✅ TỰ ĐỘNG XÁC ĐỊNH TYPE VÀ SORT
-                // Cách 1: Dùng Helper
-                sortedData = GridSortHelper.SortByProperty(products, columnBinding, isAscending);
+                // ✅ SORT VỚI MODE ĐÃ CHỌN
+                var result = GridSortHelper.SortWithMode(
+                    products,
+                    pagedItems,
+                    columnBinding,
+                    isAscending,
+                    GridSortMode.CurrentPageOnly,
+                    5
+                );
 
-                // Cách 2: Dùng Extension
-                // sortedData = products.SmartSort(columnBinding, isAscending);
+                sortedData = result.sortedData;
+                pagedItems = result.pagedCollection;
 
-                InitializePagedCollection();
+                // ✅ NAVIGATE VỀ ĐÚNG PAGE
+                if (result.currentPageIndex > 0)
+                {
+                    await pagedItems.MoveToPageAsync(result.currentPageIndex);
+                }
+
                 await InvokeAsync(StateHasChanged);
-                // await SortColumn(columnBinding);
             }
         }
     }

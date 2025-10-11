@@ -1,14 +1,27 @@
-﻿using System.Reflection;
+﻿using C1.DataCollection;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace BlazorSolution.Services
 {
+    public enum GridSortMode
+    {
+        AllData,        // Sort toàn bộ dữ liệu
+        CurrentPageOnly // Sort chỉ page hiện tại
+    }
     public static class GridSortHelper
     {
-        public static List<T> SortByProperty<T>(List<T> data, string propertyName, bool ascending)
+        public static (List<T> sortedData, C1PagedDataCollection<T> pagedCollection, int currentPageIndex) SortWithMode<T>(
+            List<T> allData,
+            C1PagedDataCollection<T> currentPagedCollection,
+            string propertyName,
+            bool ascending,
+            GridSortMode sortMode,
+            int pageSize = 10)
+            where T : class
         {
-            if (string.IsNullOrEmpty(propertyName) || data == null || !data.Any())
-                return data;
+            if (string.IsNullOrEmpty(propertyName) || allData == null || !allData.Any())
+                return (allData, currentPagedCollection, currentPagedCollection.CurrentPage);
 
             try
             {
@@ -16,35 +29,74 @@ namespace BlazorSolution.Services
                 if (propertyInfo == null)
                 {
                     Console.WriteLine($"Property '{propertyName}' not found");
-                    return data;
+                    return (allData, currentPagedCollection, currentPagedCollection.CurrentPage);
                 }
 
-                // ✅ XÁC ĐỊNH KIỂU DỮ LIỆU TỪ BINDING
                 var propertyType = propertyInfo.PropertyType;
-                var isNullable = Nullable.GetUnderlyingType(propertyType) != null;
-                var actualType = isNullable ? Nullable.GetUnderlyingType(propertyType) : propertyType;
 
-                Console.WriteLine($"Sorting '{propertyName}' - Type: {actualType.Name}, Nullable: {isNullable}");
+                if (sortMode == GridSortMode.AllData)
+                {
+                    // ✅ SORT ALL DATA - Reset về page 1
+                    var sortedData = SortByPropertyType(allData, propertyInfo, propertyType, ascending);
+                    var dataCollection = new C1DataCollection<T>(sortedData);
+                    var pagedCollection = new C1PagedDataCollection<T>(dataCollection);
+                    pagedCollection.PageSize = pageSize;
 
-                // ✅ SORT THEO ĐÚNG KIỂU DỮ LIỆU
-                return SortByPropertyType(data, propertyInfo, propertyType, ascending);
+                    Console.WriteLine($"✓ Sorted ALL data by '{propertyName}' ({propertyType.Name})");
+                    return (sortedData, pagedCollection, 0);
+                }
+                else
+                {
+                    // ✅ SORT CURRENT PAGE ONLY - Giữ nguyên tất cả pages
+                    var currentPageIndex = currentPagedCollection.CurrentPage;
+
+                    // Lấy items của page hiện tại
+                    var currentPageData = currentPagedCollection.ToList();
+
+                    // Sort items của page hiện tại
+                    var sortedPageData = SortByPropertyType(currentPageData, propertyInfo, propertyType, ascending);
+
+                    // ✅ TẠO BẢN COPY CỦA ALL DATA
+                    var updatedAllData = new List<T>(allData);
+
+                    // ✅ THAY THẾ ITEMS CỦA PAGE HIỆN TẠI TRONG ALL DATA
+                    var startIndex = currentPageIndex * pageSize;
+                    for (int i = 0; i < sortedPageData.Count; i++)
+                    {
+                        if (startIndex + i < updatedAllData.Count)
+                        {
+                            updatedAllData[startIndex + i] = sortedPageData[i];
+                        }
+                    }
+
+                    // ✅ TẠO LẠI PAGED COLLECTION VỚI ALL DATA ĐÃ UPDATE
+                    var dataCollection = new C1DataCollection<T>(updatedAllData);
+                    var pagedCollection = new C1PagedDataCollection<T>(dataCollection);
+                    pagedCollection.PageSize = pageSize;
+
+                    Console.WriteLine($"✓ Sorted CURRENT PAGE ONLY by '{propertyName}' ({propertyType.Name})");
+                    return (updatedAllData, pagedCollection, currentPageIndex);
+                }
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Sort error: {ex.Message}");
-                return data;
+                return (allData, currentPagedCollection, currentPagedCollection.CurrentPage);
             }
         }
 
-        private static List<T> SortByPropertyType<T>(List<T> data, PropertyInfo propertyInfo, Type propertyType, bool ascending)
+        private static List<T> SortByPropertyType<T>(
+            List<T> data,
+            PropertyInfo propertyInfo,
+            Type propertyType,
+            bool ascending)
+            where T : class
         {
             var parameter = Expression.Parameter(typeof(T), "x");
             var property = Expression.Property(parameter, propertyInfo);
 
-            // ✅ XỬ LÝ THEO TỪNG KIỂU DỮ LIỆU
             if (propertyType == typeof(string))
             {
-                // String: Case-insensitive, null handling
                 var lambda = Expression.Lambda<Func<T, string>>(property, parameter);
                 return ascending
                     ? data.OrderBy(lambda.Compile(), StringComparer.OrdinalIgnoreCase).ToList()
@@ -100,7 +152,6 @@ namespace BlazorSolution.Services
             }
             else
             {
-                // Generic fallback cho các type khác
                 var conversion = Expression.Convert(property, typeof(object));
                 var lambda = Expression.Lambda<Func<T, object>>(conversion, parameter);
                 return ascending
@@ -109,14 +160,7 @@ namespace BlazorSolution.Services
             }
         }
 
-        // ✅ METHOD ĐỂ LẤY THÔNG TIN PROPERTY TỪ BINDING
-        public static PropertyInfo GetPropertyInfo<T>(string propertyName)
-        {
-            return typeof(T).GetProperty(propertyName);
-        }
-
-        // ✅ METHOD ĐỂ LẤY KIỂU DỮ LIỆU TỪ BINDING
-        public static Type GetPropertyType<T>(string propertyName)
+        public static Type GetPropertyType<T>(string propertyName) where T : class
         {
             var propInfo = typeof(T).GetProperty(propertyName);
             if (propInfo == null) return null;
@@ -124,34 +168,25 @@ namespace BlazorSolution.Services
             var type = propInfo.PropertyType;
             return Nullable.GetUnderlyingType(type) ?? type;
         }
-
-        // ✅ METHOD KIỂM TRA NULLABLE
-        public static bool IsNullableProperty<T>(string propertyName)
-        {
-            var propInfo = typeof(T).GetProperty(propertyName);
-            if (propInfo == null) return false;
-
-            return Nullable.GetUnderlyingType(propInfo.PropertyType) != null;
-        }
     }
 
     // Helpers/GridSortExtensions.cs
-    public static class GridSortExtensions
-    {
-        public static List<T> SmartSort<T>(this List<T> data, string propertyName, bool ascending = true)
-        {
-            return GridSortHelper.SortByProperty(data, propertyName, ascending);
-        }
+    //public static class GridSortExtensions
+    //{
+    //    public static List<T> SmartSort<T>(this List<T> data, string propertyName, bool ascending = true)
+    //    {
+    //        return GridSortHelper.SortByProperty(data, propertyName, ascending);
+    //    }
 
-        public static string GetPropertyTypeName<T>(this string propertyName)
-        {
-            var type = GridSortHelper.GetPropertyType<T>(propertyName);
-            return type?.Name ?? "Unknown";
-        }
+    //    public static string GetPropertyTypeName<T>(this string propertyName)
+    //    {
+    //        var type = GridSortHelper.GetPropertyType<T>(propertyName);
+    //        return type?.Name ?? "Unknown";
+    //    }
 
-        public static bool IsNullable<T>(this string propertyName)
-        {
-            return GridSortHelper.IsNullableProperty<T>(propertyName);
-        }
-    }
+    //    public static bool IsNullable<T>(this string propertyName)
+    //    {
+    //        return GridSortHelper.IsNullableProperty<T>(propertyName);
+    //    }
+    //}
 }

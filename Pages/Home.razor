@@ -199,27 +199,6 @@ Welcome to your new app.
         };
     }
 
-    private async Task SortCurrentPageOnly(string columnName)
-    {
-        // Lấy items của page hiện tại
-        var currentPageItems = pagedItems.ToList();
-
-        // Sort chỉ page hiện tại
-        var sortedPageItems = columnName switch
-        {
-            nameof(Product.Name) => isAscending
-                ? currentPageItems.OrderBy(x => x.Name).ToList()
-                : currentPageItems.OrderByDescending(x => x.Name).ToList(),
-            _ => currentPageItems
-        };
-
-        InitializePagedCollection();
-
-        await InvokeAsync(StateHasChanged);
-        // Hiển thị lại (nhưng cách này không tốt)
-        // ... phức tạp và không recommended
-    }
-
     private async void OnSort(object sender, GridInputEventArgs e)
     {
         if (e.CellType == GridCellType.ColumnHeader)
@@ -232,7 +211,27 @@ Welcome to your new app.
 
             if (!string.IsNullOrEmpty(columnBinding))
             {
-                await SortColumn(columnBinding);
+                // Toggle direction
+                if (currentSortColumn == columnBinding)
+                {
+                    isAscending = !isAscending;
+                }
+                else
+                {
+                    currentSortColumn = columnBinding;
+                    isAscending = true;
+                }
+
+                // ✅ TỰ ĐỘNG XÁC ĐỊNH TYPE VÀ SORT
+                // Cách 1: Dùng Helper
+                sortedData = GridSortHelper.SortByProperty(products, columnBinding, isAscending);
+
+                // Cách 2: Dùng Extension
+                // sortedData = products.SmartSort(columnBinding, isAscending);
+
+                InitializePagedCollection();
+                await InvokeAsync(StateHasChanged);
+                // await SortColumn(columnBinding);
             }
         }
     }

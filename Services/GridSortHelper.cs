@@ -1,4 +1,5 @@
 ﻿using C1.DataCollection;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -11,80 +12,6 @@ namespace BlazorSolution.Services
     }
     public static class GridSortHelper
     {
-        public static (List<T> sortedData, C1PagedDataCollection<T> pagedCollection, int currentPageIndex) SortWithMode<T>(
-            List<T> allData,
-            C1PagedDataCollection<T> currentPagedCollection,
-            string propertyName,
-            bool ascending,
-            GridSortMode sortMode,
-            int pageSize = 10)
-            where T : class
-        {
-            if (string.IsNullOrEmpty(propertyName) || allData == null || !allData.Any())
-                return (allData, currentPagedCollection, currentPagedCollection.CurrentPage);
-
-            try
-            {
-                var propertyInfo = typeof(T).GetProperty(propertyName);
-                if (propertyInfo == null)
-                {
-                    Console.WriteLine($"Property '{propertyName}' not found");
-                    return (allData, currentPagedCollection, currentPagedCollection.CurrentPage);
-                }
-
-                var propertyType = propertyInfo.PropertyType;
-
-                if (sortMode == GridSortMode.AllData)
-                {
-                    // ✅ SORT ALL DATA - Reset về page 1
-                    var sortedData = SortByPropertyType(allData, propertyInfo, propertyType, ascending);
-                    var dataCollection = new C1DataCollection<T>(sortedData);
-                    var pagedCollection = new C1PagedDataCollection<T>(dataCollection);
-                    pagedCollection.PageSize = pageSize;
-
-                    Console.WriteLine($"✓ Sorted ALL data by '{propertyName}' ({propertyType.Name})");
-                    return (sortedData, pagedCollection, 0);
-                }
-                else
-                {
-                    // ✅ SORT CURRENT PAGE ONLY - Giữ nguyên tất cả pages
-                    var currentPageIndex = currentPagedCollection.CurrentPage;
-
-                    // Lấy items của page hiện tại
-                    var currentPageData = currentPagedCollection.ToList();
-
-                    // Sort items của page hiện tại
-                    var sortedPageData = SortByPropertyType(currentPageData, propertyInfo, propertyType, ascending);
-
-                    // ✅ TẠO BẢN COPY CỦA ALL DATA
-                    var updatedAllData = new List<T>(allData);
-
-                    // ✅ THAY THẾ ITEMS CỦA PAGE HIỆN TẠI TRONG ALL DATA
-                    var startIndex = currentPageIndex * pageSize;
-                    for (int i = 0; i < sortedPageData.Count; i++)
-                    {
-                        if (startIndex + i < updatedAllData.Count)
-                        {
-                            updatedAllData[startIndex + i] = sortedPageData[i];
-                        }
-                    }
-
-                    // ✅ TẠO LẠI PAGED COLLECTION VỚI ALL DATA ĐÃ UPDATE
-                    var dataCollection = new C1DataCollection<T>(updatedAllData);
-                    var pagedCollection = new C1PagedDataCollection<T>(dataCollection);
-                    pagedCollection.PageSize = pageSize;
-
-                    Console.WriteLine($"✓ Sorted CURRENT PAGE ONLY by '{propertyName}' ({propertyType.Name})");
-                    return (updatedAllData, pagedCollection, currentPageIndex);
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Sort error: {ex.Message}");
-                return (allData, currentPagedCollection, currentPagedCollection.CurrentPage);
-            }
-        }
-
         private static List<T> SortByPropertyType<T>(
             List<T> data,
             PropertyInfo propertyInfo,
@@ -168,25 +95,86 @@ namespace BlazorSolution.Services
             var type = propInfo.PropertyType;
             return Nullable.GetUnderlyingType(type) ?? type;
         }
+
+        public static C1PagedDataCollection<T>? SortAllData<T>(
+            List<T> allData,
+            string propertyName,
+            bool ascending)
+            where T : class
+        {
+            if (string.IsNullOrEmpty(propertyName) || allData == null || !allData.Any())
+                return null;
+
+            var propertyInfo = typeof(T).GetProperty(propertyName);
+
+            if (propertyInfo == null)
+            {
+                Console.WriteLine($"Property '{propertyName}' not found");
+                return null;
+            }
+
+            var propertyType = propertyInfo.PropertyType;
+
+            var sortedData = SortByPropertyType(allData, propertyInfo, propertyType, ascending);
+            var dataCollection = new C1DataCollection<T>(sortedData);
+            var pagedCollection = new C1PagedDataCollection<T>(dataCollection);
+
+            Console.WriteLine($" Sorted ALL data by '{propertyName}' ({propertyType.Name})");
+            return pagedCollection;
+        }
+        public static C1PagedDataCollection<T>? SortCurrentPage<T>(
+            List<T> allData,
+            C1PagedDataCollection<T> currentPagedCollection,
+            string propertyName,
+            bool ascending
+           )
+            where T : class
+        {
+
+            if (string.IsNullOrEmpty(propertyName) || currentPagedCollection == null || !currentPagedCollection.Any())
+                return null;
+
+            var propertyInfo = typeof(T).GetProperty(propertyName);
+            if (propertyInfo == null)
+            {
+                Console.WriteLine($"Property '{propertyName}' not found");
+                return null;
+            }
+
+            var propertyType = propertyInfo.PropertyType;
+
+            // Get current page index
+            var currentPageIndex = currentPagedCollection.CurrentPage;
+
+            // Get items of current page
+            var currentPageData = currentPagedCollection.ToList();
+
+            //get pagesize
+            var pageSize = currentPagedCollection.PageSize;
+
+            // Sort current page
+            var sortedPageData = SortByPropertyType(currentPageData, propertyInfo, propertyType, ascending);
+
+            // Copy All data
+            var updatedAllData = new List<T>(allData);
+
+            // update items only currentpage
+            var startIndex = currentPageIndex * pageSize;
+            for (int i = 0; i < sortedPageData.Count; i++)
+            {
+                if (startIndex + i < updatedAllData.Count)
+                {
+                    updatedAllData[startIndex + i] = sortedPageData[i];
+                }
+            }
+
+            // recreate paged data with update
+            var dataCollection = new C1DataCollection<T>(updatedAllData);
+            var pagedCollection = new C1PagedDataCollection<T>(dataCollection);
+            pagedCollection.PageSize = pageSize;
+
+            Console.WriteLine($"Sorted CURRENT PAGE ONLY by '{propertyName}' ({propertyType.Name})");
+            return pagedCollection;
+        }
     }
-
-    // Helpers/GridSortExtensions.cs
-    //public static class GridSortExtensions
-    //{
-    //    public static List<T> SmartSort<T>(this List<T> data, string propertyName, bool ascending = true)
-    //    {
-    //        return GridSortHelper.SortByProperty(data, propertyName, ascending);
-    //    }
-
-    //    public static string GetPropertyTypeName<T>(this string propertyName)
-    //    {
-    //        var type = GridSortHelper.GetPropertyType<T>(propertyName);
-    //        return type?.Name ?? "Unknown";
-    //    }
-
-    //    public static bool IsNullable<T>(this string propertyName)
-    //    {
-    //        return GridSortHelper.IsNullableProperty<T>(propertyName);
-    //    }
-    //}
 }

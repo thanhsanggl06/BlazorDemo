@@ -48,13 +48,12 @@ Welcome to your new app.
 
 
 @code {
-
+    private GridSortMode sortMode = GridSortMode.AllData;
     private FlexGrid? flexGrid;
     private List<Product> products = new();
 
     private string currentSortColumn = "";
     private bool isAscending = true;
-    private List<Product> sortedData;
 
     private int nextId = 11;
     protected override void OnInitialized()
@@ -77,7 +76,12 @@ Welcome to your new app.
         new Product { Id = 7, Name = "AirPods Pro 2", Price = 6500000 },
         new Product { Id = 8, Name = "Apple Watch Series 9", Price = 11000000 },
         new Product { Id = 9, Name = "Logitech MX Master 3S", Price = 2500000 },
-        new Product { Id = 10, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 }
+        new Product { Id = 11, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 },
+        new Product { Id = 12, Name = "2", Price = 8500000 },
+        new Product { Id = 13, Name = "AirPods Pro 2", Price = 6500000 },
+        new Product { Id = 14, Name = "Apple Watch Series 9", Price = 11000000 },
+        new Product { Id = 15, Name = "Logitech MX Master 3S", Price = 2500000 },
+        new Product { Id = 16, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 }
     };
         foreach(Product p in products){
             p.Validate();
@@ -150,55 +154,6 @@ Welcome to your new app.
         }
     }
 
-    private void InitializePagedCollection()
-    {
-        var dataCollection = new C1DataCollection<Product>(sortedData);
-        pagedItems = new C1PagedDataCollection<Product>(dataCollection);
-        pagedItems.PageSize = 5;
-    }
-
-    private async Task SortColumn(string columnName)
-    {
-        // Toggle sort direction nếu double tap vào cùng cột
-        if (currentSortColumn == columnName)
-        {
-            isAscending = !isAscending;
-        }
-        else
-        {
-            currentSortColumn = columnName;
-            isAscending = true;
-        }
-
-        // Sort data
-        sortedData = SortData(products, columnName, isAscending);
-
-        // Refresh paged collection
-        InitializePagedCollection();
-
-        await InvokeAsync(StateHasChanged);
-    }
-
-    private List<Product> SortData(List<Product> data, string columnName, bool ascending)
-    {
-        return columnName switch
-        {
-            nameof(Product.Name) => ascending
-                ? data.OrderBy(x => x.Name).ToList()
-                : data.OrderByDescending(x => x.Name).ToList(),
-
-            nameof(Product.Id) => ascending
-                ? data.OrderBy(x => x.Id).ToList()
-                : data.OrderByDescending(x => x.Id).ToList(),
-
-            nameof(Product.Price) => ascending
-                ? data.OrderBy(x => x.Price).ToList()
-                : data.OrderByDescending(x => x.Price).ToList(),
-
-            _ => data
-        };
-    }
-
     private async void OnSort(object sender, GridInputEventArgs e)
     {
         if (e.CellType == GridCellType.ColumnHeader)
@@ -206,8 +161,14 @@ Welcome to your new app.
             var grid = sender as FlexGrid;
             if (grid == null) return;
 
+            var itemsEnum = grid.ItemsSource as C1PagedDataCollection<Product>;
+            if (itemsEnum == null) return;
+
             var column = grid.Columns[e.CellRange.Column];
             var columnBinding = column.Binding;
+
+            var pagedCurrentIndex = itemsEnum.CurrentPage;
+            var pagedCollection = new C1PagedDataCollection<Product>("");
 
             if (!string.IsNullOrEmpty(columnBinding))
             {
@@ -222,23 +183,27 @@ Welcome to your new app.
                     isAscending = true;
                 }
 
-                // ✅ SORT VỚI MODE ĐÃ CHỌN
-                var result = GridSortHelper.SortWithMode(
-                    products,
-                    pagedItems,
-                    columnBinding,
-                    isAscending,
-                    GridSortMode.CurrentPageOnly,
-                    5
-                );
 
-                sortedData = result.sortedData;
-                pagedItems = result.pagedCollection;
+                if (sortMode == GridSortMode.AllData)
+                    //Sort all data
+                    pagedCollection = GridSortHelper.SortAllData(products, columnBinding, isAscending);
+                else
+                    //Sort current page
+                    pagedCollection = GridSortHelper.SortCurrentPage(
+                       products,
+                       itemsEnum,
+                       columnBinding,
+                       isAscending
+                   );
 
-                // ✅ NAVIGATE VỀ ĐÚNG PAGE
-                if (result.currentPageIndex > 0)
+                if (pagedCollection == null) return;
+                pagedCollection.PageSize = 5;
+                pagedItems = pagedCollection;
+
+                //move to currentpage
+                if (pagedCurrentIndex > 0 && sortMode == GridSortMode.CurrentPageOnly)
                 {
-                    await pagedItems.MoveToPageAsync(result.currentPageIndex);
+                    await pagedItems.MoveToPageAsync(pagedCurrentIndex);
                 }
 
                 await InvokeAsync(StateHasChanged);

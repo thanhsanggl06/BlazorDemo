@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="type" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- Custom Validation Messages - English -->
+  <data name="PhoneInvalid" xml:space="preserve">
+    <value>Please enter a valid phone number.</value>
+  </data>
+  <data name="PasswordTooWeak" xml:space="preserve">
+    <value>Password must contain uppercase, lowercase, number and special character.</value>
+  </data>
+  <data name="FieldsDoNotMatch" xml:space="preserve">
+    <value>{0} does not match {1}.</value>
+  </data>
+  <data name="FutureDate" xml:space="preserve">
+    <value>{0} must be a future date.</value>
+  </data>
+  <data name="PastDate" xml:space="preserve">
+    <value>{0} must be a past date.</value>
+  </data>
+  <data name="DateRangeError" xml:space="preserve">
+    <value>{0} must be between {1} and {2} days from now.</value>
+  </data>
+  <data name="AgeRange" xml:space="preserve">
+    <value>Age must be between {1} and {2} years old.</value>
+  </data>
+  <data name="DateInvalid" xml:space="preserve">
+    <value>Please enter a valid date.</value>
+  </data>
+</root>

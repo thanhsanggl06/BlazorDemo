@@ -57,10 +57,6 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xHcmlkTGF5b3V0XFN0YWNrLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/NetSource/BlazorSolution/Pages/AdvanceForm.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWR2YW5jZUZvcm0ucmF6b3I=
-build_metadata.AdditionalFiles.CssScope = 
-
 [D:/NetSource/BlazorSolution/Pages/BlazorFormDemo.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQmxhem9yRm9ybURlbW8ucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
@@ -71,6 +67,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [D:/NetSource/BlazorSolution/Pages/Counter.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ291bnRlci5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/NetSource/BlazorSolution/Pages/CustomValidationDemo.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ3VzdG9tVmFsaWRhdGlvbkRlbW8ucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/NetSource/BlazorSolution/Pages/ExampleGrid.razor]
@@ -124,3 +124,7 @@ build_metadata.AdditionalFiles.CssScope = b-ao2yaoivkl
 [D:/NetSource/BlazorSolution/MsgBox/MessageBoxContainer.razor]
 build_metadata.AdditionalFiles.TargetPath = TXNnQm94XE1lc3NhZ2VCb3hDb250YWluZXIucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = b-0av9xf34qz
+
+[D:/NetSource/BlazorSolution/Pages/AdvanceForm.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWR2YW5jZUZvcm0ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-nhq3e6t3wa

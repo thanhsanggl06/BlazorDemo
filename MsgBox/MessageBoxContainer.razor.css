@@ -1,6 +1,8 @@
-﻿.c1-window {
+﻿
+.c1-window {
     border-radius: 0.5rem;
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+
 }
 
     .c1-window .c1-window-header {
@@ -11,6 +13,7 @@
     .c1-window .c1-window-content {
         padding: 0;
     }
+
 
 @media (max-width: 576px) {
     .modal-footer {

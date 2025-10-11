@@ -54,15 +54,52 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label">Danh mục:</label>
-                                    <InputSelect class="form-select"
+                                    @if (isLoading)
+                                    {
+                                        <div class="placeholder-glow">
+                                            <span class="placeholder col-12 bg-secondary" style="height: 38px; border-radius: 0.375rem;"></span>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <InputSelect class="form-select"
+                                                     @bind-Value="productModel.Category"
+                                                     @onchange="@(() => ValidateField(nameof(productModel.Category)))">
+                                            <option value="">-- Chọn danh mục --</option>
+                                            <option value="Electronics">Điện tử</option>
+                                            <option value="Fashion">Thời trang</option>
+                                            <option value="Food">Thực phẩm</option>
+                                            <option value="Books">Sách</option>
+                                        </InputSelect>
+                                    }
+                                    @* <InputSelect class="@($"form-select {(isLoading ? "placeholder-glow" : "")}")"
                                                  @bind-Value="productModel.Category"
-                                                 @onchange="@(() => ValidateField(nameof(productModel.Category)))">
-                                        <option value="">-- Chọn danh mục --</option>
+                                                 @onchange="@(() => ValidateField(nameof(productModel.Category)))"
+                                                 disabled="@isLoading">
+                                        @if (isLoading)
+                                        {
+                                            <option value=""></option>
+                                        }
+                                        else
+                                        {
+                                            <option value="">-- Chọn danh mục --</option>
+                                            <option value="Electronics">Điện tử</option>
+                                            <option value="Fashion">Thời trang</option>
+                                            <option value="Food">Thực phẩm</option>
+                                            <option value="Books">Sách</option>
+                                        }
+                                    </InputSelect> *@
+
+
+                                    @* <InputSelect class="@($"form-select {(true ? "skeleton-loading" : "")}")"
+                                                 @bind-Value="productModel.Category"
+                                                 @onchange="@(() => ValidateField(nameof(productModel.Category)))"> *@
+                                        @* <option value="">-- Chọn danh mục --</option>
                                         <option value="Electronics">Điện tử</option>
                                         <option value="Fashion">Thời trang</option>
                                         <option value="Food">Thực phẩm</option>
-                                        <option value="Books">Sách</option>
-                                    </InputSelect>
+                                        <option value="Books">Sách</option> *@
+                                    @* </InputSelect> *@
                                     <ValidationMessage For="@(() => productModel.Category)" class="text-danger" />
                                 </div>
 
@@ -123,6 +160,15 @@
     private EditContext? editContext;
     private ValidationMessageStore? messageStore;
     private bool submissionSuccess = false;
+
+    private bool isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        isLoading = true;
+        await Task.Delay(1000); // Demo loading
+        isLoading = false;
+    }
 
     protected override void OnInitialized()
     {

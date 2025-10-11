@@ -20,9 +20,11 @@ Welcome to your new app.
           SelectionMode="GridSelectionMode.None"
           HeadersVisibility="GridHeadersVisibility.All"
           CellTapped="OnCellTapped"
+          CellDoubleTapped="OnSort"
+          AllowSorting="true"
           AutoGenerateColumns="false"
           Style="@("height:500px")">
-    <FlexGridColumns>
+    <FlexGridColumns >
         <GridColumn Binding="Id"
                     Header="Product ID"
                     IsReadOnly="true" />
@@ -49,6 +51,10 @@ Welcome to your new app.
 
     private FlexGrid? flexGrid;
     private List<Product> products = new();
+
+    private string currentSortColumn = "";
+    private bool isAscending = true;
+    private List<Product> sortedData;
 
     private int nextId = 11;
     protected override void OnInitialized()
@@ -143,6 +149,92 @@ Welcome to your new app.
             StateHasChanged();
         }
     }
-    
-    
+
+    private void InitializePagedCollection()
+    {
+        var dataCollection = new C1DataCollection<Product>(sortedData);
+        pagedItems = new C1PagedDataCollection<Product>(dataCollection);
+        pagedItems.PageSize = 5;
+    }
+
+    private async Task SortColumn(string columnName)
+    {
+        // Toggle sort direction nếu double tap vào cùng cột
+        if (currentSortColumn == columnName)
+        {
+            isAscending = !isAscending;
+        }
+        else
+        {
+            currentSortColumn = columnName;
+            isAscending = true;
+        }
+
+        // Sort data
+        sortedData = SortData(products, columnName, isAscending);
+
+        // Refresh paged collection
+        InitializePagedCollection();
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private List<Product> SortData(List<Product> data, string columnName, bool ascending)
+    {
+        return columnName switch
+        {
+            nameof(Product.Name) => ascending
+                ? data.OrderBy(x => x.Name).ToList()
+                : data.OrderByDescending(x => x.Name).ToList(),
+
+            nameof(Product.Id) => ascending
+                ? data.OrderBy(x => x.Id).ToList()
+                : data.OrderByDescending(x => x.Id).ToList(),
+
+            nameof(Product.Price) => ascending
+                ? data.OrderBy(x => x.Price).ToList()
+                : data.OrderByDescending(x => x.Price).ToList(),
+
+            _ => data
+        };
+    }
+
+    private async Task SortCurrentPageOnly(string columnName)
+    {
+        // Lấy items của page hiện tại
+        var currentPageItems = pagedItems.ToList();
+
+        // Sort chỉ page hiện tại
+        var sortedPageItems = columnName switch
+        {
+            nameof(Product.Name) => isAscending
+                ? currentPageItems.OrderBy(x => x.Name).ToList()
+                : currentPageItems.OrderByDescending(x => x.Name).ToList(),
+            _ => currentPageItems
+        };
+
+        InitializePagedCollection();
+
+        await InvokeAsync(StateHasChanged);
+        // Hiển thị lại (nhưng cách này không tốt)
+        // ... phức tạp và không recommended
+    }
+
+    private async void OnSort(object sender, GridInputEventArgs e)
+    {
+        if (e.CellType == GridCellType.ColumnHeader)
+        {
+            var grid = sender as FlexGrid;
+            if (grid == null) return;
+
+            var column = grid.Columns[e.CellRange.Column];
+            var columnBinding = column.Binding;
+
+            if (!string.IsNullOrEmpty(columnBinding))
+            {
+                await SortColumn(columnBinding);
+            }
+        }
+    }
+
 }

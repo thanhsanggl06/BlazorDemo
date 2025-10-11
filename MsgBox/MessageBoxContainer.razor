@@ -6,94 +6,93 @@
 @if (currentModel != null)
 {
     @* ⭐ SỬA DỤNG PopupHeader và PopupContent THAY VÌ Header và WindowContent *@
-    <C1Window @ref="messageWindow"
-              Style="@windowStyle"
-              IsModeless="false"
-              IsDarkOverlay="false"
-    >
-        <PopupHeader>
-            @* ⭐ HEADER CONTENT *@
-            <div class="d-flex align-items-center gap-2 @GetHeaderBgClass()" style="padding: 0.5rem 0;">
-                <div style="font-size: 20px;">
-                    @GetHeaderIcon()
+        <C1Window @ref="messageWindow"
+                  Style="@windowStyle"
+                  IsModeless="false"
+                  IsDarkOverlay="false">
+            <PopupHeader>
+                @* ⭐ HEADER CONTENT *@
+                <div class="d-flex align-items-center gap-2 @GetHeaderBgClass()" style="padding: 0.5rem 0;">
+                    <div style="font-size: 20px;">
+                        @GetHeaderIcon()
+                    </div>
+                    <span class="fw-semibold">@currentModel.Title</span>
                 </div>
-                <span class="fw-semibold">@currentModel.Title</span>
-            </div>
-        </PopupHeader>
+            </PopupHeader>
 
-        <PopupContent>
-            <!-- Modal Body using Bootstrap -->
-            <div class="modal-body">
-                <div class="d-flex align-items-start gap-3">
-                    <!-- Icon -->
-                    <div class="flex-shrink-0">
-                        <div class="@GetIconClass()" style="font-size: 48px;">
-                            @GetIcon()
+            <PopupContent>
+                <!-- Modal Body using Bootstrap -->
+                <div class="modal-body">
+                    <div class="d-flex align-items-start gap-3">
+                        <!-- Icon -->
+                        <div class="flex-shrink-0">
+                            <div class="@GetIconClass()" style="font-size: 48px;">
+                                @GetIcon()
+                            </div>
+                        </div>
+
+                        <!-- Message Content -->
+                        <div class="flex-grow-1">
+                            @if (currentModel.Type == MessageBoxType.Prompt)
+                            {
+                                <p class="mb-3">@currentModel.Message</p>
+                                <input type="text"
+                                       class="form-control"
+                                       @bind="promptValue"
+                                       @bind:event="oninput"
+                                       placeholder="@currentModel.DefaultValue" />
+                            }
+                            else
+                            {
+                                <p class="mb-0">@((MarkupString)currentModel.Message.Replace("\n", "<br/>"))</p>
+                            }
                         </div>
                     </div>
-
-                    <!-- Message Content -->
-                    <div class="flex-grow-1">
-                        @if (currentModel.Type == MessageBoxType.Prompt)
-                        {
-                            <p class="mb-3">@currentModel.Message</p>
-                            <input type="text"
-                                   class="form-control"
-                                   @bind="promptValue"
-                                   @bind:event="oninput"
-                                   placeholder="@currentModel.DefaultValue" />
-                        }
-                        else
-                        {
-                            <p class="mb-0">@((MarkupString)currentModel.Message.Replace("\n", "<br/>"))</p>
-                        }
-                    </div>
                 </div>
-            </div>
 
-            <!-- Modal Footer using Bootstrap -->
-            <div class="modal-footer">
-                @switch (currentModel.Buttons)
-                {
-                    case MessageBoxButtons.OK:
-                        <button class="btn btn-primary" @onclick="() => Close(MessageBoxResult.OK)">
-                            @currentModel.OkButtonText
-                        </button>
-                        break;
+                <!-- Modal Footer using Bootstrap -->
+                <div class="modal-footer">
+                    @switch (currentModel.Buttons)
+                    {
+                        case MessageBoxButtons.OK:
+                            <button class="btn btn-primary" @onclick="() => Close(MessageBoxResult.OK)">
+                                @currentModel.OkButtonText
+                            </button>
+                            break;
 
-                    case MessageBoxButtons.OKCancel:
-                        <button class="btn btn-secondary" @onclick="() => Close(MessageBoxResult.Cancel)">
-                            @currentModel.CancelButtonText
-                        </button>
-                        <button class="btn btn-primary" @onclick="() => Close(MessageBoxResult.OK)">
-                            @currentModel.OkButtonText
-                        </button>
-                        break;
+                        case MessageBoxButtons.OKCancel:
+                            <button class="btn btn-secondary" @onclick="() => Close(MessageBoxResult.Cancel)">
+                                @currentModel.CancelButtonText
+                            </button>
+                            <button class="btn btn-primary" @onclick="() => Close(MessageBoxResult.OK)">
+                                @currentModel.OkButtonText
+                            </button>
+                            break;
 
-                    case MessageBoxButtons.YesNo:
-                        <button class="btn btn-secondary" @onclick="() => Close(MessageBoxResult.No)">
-                            @currentModel.NoButtonText
-                        </button>
-                        <button class="btn btn-primary" @onclick="() => Close(MessageBoxResult.Yes)">
-                            @currentModel.YesButtonText
-                        </button>
-                        break;
+                        case MessageBoxButtons.YesNo:
+                            <button class="btn btn-secondary" @onclick="() => Close(MessageBoxResult.No)">
+                                @currentModel.NoButtonText
+                            </button>
+                            <button class="btn btn-primary" @onclick="() => Close(MessageBoxResult.Yes)">
+                                @currentModel.YesButtonText
+                            </button>
+                            break;
 
-                    case MessageBoxButtons.YesNoCancel:
-                        <button class="btn btn-secondary" @onclick="() => Close(MessageBoxResult.Cancel)">
-                            @currentModel.CancelButtonText
-                        </button>
-                        <button class="btn btn-outline-secondary" @onclick="() => Close(MessageBoxResult.No)">
-                            @currentModel.NoButtonText
-                        </button>
-                        <button class="btn btn-primary" @onclick="() => Close(MessageBoxResult.Yes)">
-                            @currentModel.YesButtonText
-                        </button>
-                        break;
-                }
-            </div>
-        </PopupContent>
-    </C1Window>
+                        case MessageBoxButtons.YesNoCancel:
+                            <button class="btn btn-secondary" @onclick="() => Close(MessageBoxResult.Cancel)">
+                                @currentModel.CancelButtonText
+                            </button>
+                            <button class="btn btn-outline-secondary" @onclick="() => Close(MessageBoxResult.No)">
+                                @currentModel.NoButtonText
+                            </button>
+                            <button class="btn btn-primary" @onclick="() => Close(MessageBoxResult.Yes)">
+                                @currentModel.YesButtonText
+                            </button>
+                            break;
+                    }
+                </div>
+            </PopupContent>
+        </C1Window>
 }
 
 @code {

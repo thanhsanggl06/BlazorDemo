@@ -13,6 +13,23 @@ main[b-dj6azzh6l4] {
     background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
 }
 
+.message-box-debug[b-dj6azzh6l4] {
+    border: 2px dashed magenta;
+    color: magenta;
+    font-size: 12px;
+    padding: 6px 12px;
+    background-color: rgba(255, 0, 255, 0.1);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    pointer-events: none;
+    text-align: center;
+    border-radius: 8px;
+}
+
+
 .top-row[b-dj6azzh6l4] {
     background-color: #f7f7f7;
     border-bottom: 1px solid #d6d5d5;
@@ -28,23 +45,23 @@ main[b-dj6azzh6l4] {
         text-decoration: none;
     }
 
-    .top-row[b-dj6azzh6l4]  a:hover, .top-row[b-dj6azzh6l4]  .btn-link:hover {
-        text-decoration: underline;
-    }
+        .top-row[b-dj6azzh6l4]  a:hover, .top-row[b-dj6azzh6l4]  .btn-link:hover {
+            text-decoration: underline;
+        }
 
-    .top-row[b-dj6azzh6l4]  a:first-child {
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
+        .top-row[b-dj6azzh6l4]  a:first-child {
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
 
 @media (max-width: 640.98px) {
     .top-row[b-dj6azzh6l4] {
         justify-content: space-between;
     }
 
-    .top-row[b-dj6azzh6l4]  a, .top-row[b-dj6azzh6l4]  .btn-link {
-        margin-left: 0;
-    }
+        .top-row[b-dj6azzh6l4]  a, .top-row[b-dj6azzh6l4]  .btn-link {
+            margin-left: 0;
+        }
 }
 
 @media (min-width: 641px) {
@@ -65,11 +82,11 @@ main[b-dj6azzh6l4] {
         z-index: 1;
     }
 
-    .top-row.auth[b-dj6azzh6l4]  a:first-child {
-        flex: 1;
-        text-align: right;
-        width: 0;
-    }
+        .top-row.auth[b-dj6azzh6l4]  a:first-child {
+            flex: 1;
+            text-align: right;
+            width: 0;
+        }
 
     .top-row[b-dj6azzh6l4], article[b-dj6azzh6l4] {
         padding-left: 2rem !important;
@@ -161,9 +178,11 @@ main[b-dj6azzh6l4] {
     }
 }
 /* /MsgBox/MessageBoxContainer.razor.rz.scp.css */
+
 .c1-window[b-0av9xf34qz] {
     border-radius: 0.5rem;
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+
 }
 
     .c1-window .c1-window-header[b-0av9xf34qz] {
@@ -175,6 +194,7 @@ main[b-dj6azzh6l4] {
         padding: 0;
     }
 
+
 @media (max-width: 576px) {
     .modal-footer[b-0av9xf34qz] {
         flex-direction: column-reverse;
@@ -184,4 +204,25 @@ main[b-dj6azzh6l4] {
         .modal-footer .btn[b-0av9xf34qz] {
             width: 100%;
         }
+}
+/* /Pages/AdvanceForm.razor.rz.scp.css */
+select.skeleton-loading[b-nhq3e6t3wa],
+select.skeleton-loading:disabled[b-nhq3e6t3wa] {
+    background: linear-gradient(90deg, #e0e0e0 0%, #f5f5f5 50%, #e0e0e0 100%) !important;
+    background-size: 200% 100% !important;
+    background-image: linear-gradient(90deg, #e0e0e0 0%, #f5f5f5 50%, #e0e0e0 100%) !important;
+    animation: skeleton-shimmer-b-nhq3e6t3wa 1.5s ease-in-out infinite !important;
+    color: transparent !important;
+    cursor: wait !important;
+    opacity: 1 !important;
+}
+
+@keyframes skeleton-shimmer-b-nhq3e6t3wa {
+    0% {
+        background-position: 200% center;
+    }
+
+    100% {
+        background-position: -200% center;
+    }
 }

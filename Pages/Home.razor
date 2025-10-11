@@ -21,19 +21,19 @@ Welcome to your new app.
           HeadersVisibility="GridHeadersVisibility.All"
           CellTapped="OnCellTapped"
           CellDoubleTapped="OnSort"
-          AllowSorting="true"
+          ColumnOptionsMenuVisibility="GridColumnOptionsMenuVisibility.Collapsed"
           AutoGenerateColumns="false"
           Style="@("height:500px")">
     <FlexGridColumns >
         <GridColumn Binding="Id"
-                    Header="Product ID"
+                    Header="@GetHeaderWithIcon("Id", "ID")"
                     IsReadOnly="true" />
 
         <GridColumn Binding="Name"
-                    Header="Product Name" />
+                    Header="@GetHeaderWithIcon("Name", "Product")" />
 
         <GridColumn Binding="Price"
-                    Header="Price (VNĐ)"
+                    Header="@GetHeaderWithIcon("Price", "Price (VNĐ)")"
                     Format="N0" />
     </FlexGridColumns>
 </FlexGrid>
@@ -62,6 +62,18 @@ Welcome to your new app.
     }
 
     C1PagedDataCollection<Product>? pagedItems;
+
+    private string GetHeaderWithIcon(string bindingName, string headerText)
+    {
+        if (currentSortColumn == bindingName)
+        {
+            // Icon với màu xanh cho cột đang sort
+            var icon = isAscending ? "▲" : "▼";
+            return $"{headerText} {icon}";
+        }
+        // Icon xám cho cột chưa sort
+        return $"{headerText} ⇵";
+    }
 
     private void LoadProducts()
     {

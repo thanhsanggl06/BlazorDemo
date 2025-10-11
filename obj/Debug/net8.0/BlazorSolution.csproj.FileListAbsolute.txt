@@ -1731,7 +1731,7 @@ D:\NetSource\BlazorSolution\bin\Debug\net8.0\wwwroot\_framework\icudt.dat.gz
 D:\NetSource\BlazorSolution\bin\Debug\net8.0\icudt.dat
 D:\NetSource\BlazorSolution\obj\Debug\net8.0\compressed\99uk9raoe3-oh1zvcfom8.gz
 D:\NetSource\BlazorSolution\obj\Debug\net8.0\scopedcss\Pages\AdvanceForm.razor.rz.scp.css
-D:\NetSource\BlazorSolution\obj\Debug\net8.0\compressed\bdbr9bho3c-mir0yhfzg9.gz
-D:\NetSource\BlazorSolution\obj\Debug\net8.0\compressed\52haj70o4t-vttuk26q84.gz
-D:\NetSource\BlazorSolution\obj\Debug\net8.0\compressed\n11ge9gzql-op5i1i5ar2.gz
-D:\NetSource\BlazorSolution\obj\Debug\net8.0\compressed\zfidv08mdx-sqb2vh2vny.gz
+D:\NetSource\BlazorSolution\obj\Debug\net8.0\compressed\bdbr9bho3c-16mrsum2wc.gz
+D:\NetSource\BlazorSolution\obj\Debug\net8.0\compressed\52haj70o4t-jlt899z70f.gz
+D:\NetSource\BlazorSolution\obj\Debug\net8.0\compressed\n11ge9gzql-qooxt69d6r.gz
+D:\NetSource\BlazorSolution\obj\Debug\net8.0\compressed\zfidv08mdx-7mtzcmarxs.gz

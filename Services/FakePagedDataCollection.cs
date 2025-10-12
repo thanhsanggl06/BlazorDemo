@@ -1,74 +1,61 @@
-﻿using C1.DataCollection;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System;
-using System.Collections;
-using System.Collections.Specialized;
-using System.Linq;
-using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
+﻿    using C1.DataCollection;
+    using Microsoft.EntityFrameworkCore.Metadata.Internal;
+    using System;
+    using System.Collections;
+    using System.Collections.Specialized;
+    using System.Linq;
+    using System.Reflection;
+    using System.Threading;
+    using System.Threading.Tasks;
 
-public class FakePagedDataCollection<T> : C1PagedDataCollection<T> where T : class
-{
-    private C1DataCollection<T>? _rootData;
-
-    public FakePagedDataCollection(IEnumerable source) : base(source)
+    public class FakePagedDataCollection<T> : C1PagedDataCollection<T> where T : class
     {
+        private C1DataCollection<T>? _rootData;
 
-        _rootData = (C1DataCollection<T>?)source;
-    }
-
-    public override bool CanSort(params SortDescription[] sortDescriptions)
-    {
-        if (_rootData != null)
-            return true;
-        return false;
-    }
-
-    public override async Task MoveToPageAsync(int pageIndex, CancellationToken cancellationToken = default)
-    {
-        await base.MoveToPageAsync(pageIndex, cancellationToken);
-        var spanCollection = new C1SpanDataCollection<T>(_rootData);
-        spanCollection.Slice(CurrentPage * PageSize, PageSize);
-        Source = spanCollection;
-    }
-
-
-
-    public override async Task SortAsync(SortDescription[] sortDescriptions, CancellationToken cancellationToken = default)
-    {
-
-        if (sortDescriptions != null && sortDescriptions.Length > 0)
+        public FakePagedDataCollection(IEnumerable source) : base(source)
         {
-            foreach (var sort in sortDescriptions)
-            {
-                Console.WriteLine($"  Sort by: {sort.SortPath}, Direction: {sort.Direction}");
-            }
+
+            _rootData = (C1DataCollection<T>?)source;
         }
 
-        try
+        public override bool CanSort(params SortDescription[] sortDescriptions)
         {
-            await _rootData.SortAsync(sortDescriptions, cancellationToken);
+            if (_rootData != null)
+                return true;
+            return false;
+        }
+
+        public override async Task MoveToPageAsync(int pageIndex, CancellationToken cancellationToken = default)
+        {
+            await base.MoveToPageAsync(pageIndex, cancellationToken);
             var spanCollection = new C1SpanDataCollection<T>(_rootData);
             spanCollection.Slice(CurrentPage * PageSize, PageSize);
             Source = spanCollection;
+        }
 
-            if (this.CurrentPage != 0)
+
+
+        public override async Task SortAsync(SortDescription[] sortDescriptions, CancellationToken cancellationToken = default)
+        {
+
+            if (sortDescriptions != null && sortDescriptions.Length > 0)
             {
-                Console.WriteLine($"  Moving from page {this.CurrentPage} to page 0");
-                await this.MoveToPageAsync(0, cancellationToken);
+                foreach (var sort in sortDescriptions)
+                {
+                    Console.WriteLine($"  Sort by: {sort.SortPath}, Direction: {sort.Direction}");
+                }
             }
 
-            await RefreshAsync();
-            Console.WriteLine("✓ Base sorting completed");
+            try
+            {
+                await _rootData.SortAsync(sortDescriptions, cancellationToken);
+                await this.MoveToPageAsync(0, cancellationToken);
+                await RefreshAsync();
 
-        }
-
-        catch (Exception ex)
-        {
-            throw;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
     }
-
-
-}

@@ -15,19 +15,26 @@
 Welcome to your new app.
 
 <FlexGrid @ref="flexGrid"
-          ItemsSource="@pagedItems"
+          ItemsSource="@collection2"
           IsReadOnly="true"
+          AllowSorting="true"
+          ShowSort="true"
           SelectionMode="GridSelectionMode.None"
           HeadersVisibility="GridHeadersVisibility.All"
           CellTapped="OnCellTapped"
           CellDoubleTapped="OnSort"
-          ColumnOptionsMenuVisibility="GridColumnOptionsMenuVisibility.Collapsed"
+          ColumnOptionsMenuVisibility="GridColumnOptionsMenuVisibility.Visible"
           AutoGenerateColumns="false"
-          Style="@("height:500px")">
+          Style="@("height:500px")"
+          
+>
     <FlexGridColumns >
+ 
         <GridColumn Binding="Id"
                     Header="@GetHeaderWithIcon("Id", "ID")"
-                    IsReadOnly="true" />
+                    IsReadOnly="true"
+        >
+        </GridColumn>
 
         <GridColumn Binding="Name"
                     Header="@GetHeaderWithIcon("Name", "Product")" />
@@ -37,7 +44,7 @@ Welcome to your new app.
                     Format="N0" />
     </FlexGridColumns>
 </FlexGrid>
-<C1DataPager Source="pagedItems" />
+<C1DataPager Source="@collection2" />
 
 <C1Window @ref="myPopup" IsDarkOverlay="false" Style="@("width: 400px")">
     <PopupHeader>Window Popup Header</PopupHeader>
@@ -51,28 +58,37 @@ Welcome to your new app.
     private GridSortMode sortMode = GridSortMode.AllData;
     private FlexGrid? flexGrid;
     private List<Product> products = new();
+    private int PageSize = 5;
 
     private string currentSortColumn = "";
     private bool isAscending = true;
 
     private int nextId = 11;
+
+    C1PagedDataCollection<Product> collection2;
+    C1DataCollection<Product> baseCollection;
     protected override void OnInitialized()
     {
         LoadProducts();
     }
 
     C1PagedDataCollection<Product>? pagedItems;
+    C1DataPager? pagedData;
+    C1DataCollection<Product> test;
+    FakePagedDataCollection<Product>? test22;
 
     private string GetHeaderWithIcon(string bindingName, string headerText)
     {
+        var iconUp = "˄";      // U+02C4
+        var iconDown = "⌵";    // U+02C5
+
         if (currentSortColumn == bindingName)
         {
-            // Icon với màu xanh cho cột đang sort
-            var icon = isAscending ? "▲" : "▼";
+            var icon = isAscending ? iconUp : iconDown;
             return $"{headerText} {icon}";
         }
-        // Icon xám cho cột chưa sort
-        return $"{headerText} ⇵";
+
+        return headerText;
     }
 
     private void LoadProducts()
@@ -93,23 +109,85 @@ Welcome to your new app.
         new Product { Id = 13, Name = "AirPods Pro 2", Price = 6500000 },
         new Product { Id = 14, Name = "Apple Watch Series 9", Price = 11000000 },
         new Product { Id = 15, Name = "Logitech MX Master 3S", Price = 2500000 },
-        new Product { Id = 16, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 }
+        new Product { Id = 16, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 },
+        new Product { Id = 11, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 },
+        new Product { Id = 12, Name = "2", Price = 8500000 },
+        new Product { Id = 13, Name = "AirPods Pro 2", Price = 6500000 },
+        new Product { Id = 14, Name = "Apple Watch Series 9", Price = 11000000 },
+        new Product { Id = 15, Name = "Logitech MX Master 3S", Price = 2500000 },
+        new Product { Id = 16, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 },
+        new Product { Id = 11, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 },
+        new Product { Id = 12, Name = "2", Price = 8500000 },
+        new Product { Id = 13, Name = "AirPods Pro 2", Price = 6500000 },
+        new Product { Id = 14, Name = "Apple Watch Series 9", Price = 11000000 },
+        new Product { Id = 15, Name = "Logitech MX Master 3S", Price = 2500000 },
+        new Product { Id = 16, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 },
+        new Product { Id = 11, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 },
+        new Product { Id = 12, Name = "2", Price = 8500000 },
+        new Product { Id = 13, Name = "AirPods Pro 2", Price = 6500000 },
+        new Product { Id = 14, Name = "Apple Watch Series 9", Price = 11000000 },
+        new Product { Id = 15, Name = "Logitech MX Master 3S", Price = 2500000 },
+        new Product { Id = 16, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 },
+        new Product { Id = 11, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 },
+        new Product { Id = 12, Name = "2", Price = 8500000 },
+        new Product { Id = 13, Name = "AirPods Pro 2", Price = 6500000 },
+        new Product { Id = 14, Name = "Apple Watch Series 9", Price = 11000000 },
+        new Product { Id = 15, Name = "Logitech MX Master 3S", Price = 2500000 },
+        new Product { Id = 16, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 }, 
+        new Product { Id = 11, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 },
+        new Product { Id = 12, Name = "2", Price = 8500000 },
+        new Product { Id = 13, Name = "AirPods Pro 2", Price = 6500000 },
+        new Product { Id = 14, Name = "Apple Watch Series 9", Price = 11000000 },
+        new Product { Id = 15, Name = "Logitech MX Master 3S", Price = 2500000 },
+        new Product { Id = 16, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 },
+        new Product { Id = 11, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 },
+        new Product { Id = 12, Name = "2", Price = 8500000 },
+        new Product { Id = 13, Name = "AirPods Pro 2", Price = 6500000 },
+        new Product { Id = 14, Name = "Apple Watch Series 9", Price = 11000000 },
+        new Product { Id = 15, Name = "Logitech MX Master 3S", Price = 2500000 },
+        new Product { Id = 16, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 },
+        new Product { Id = 11, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 },
+        new Product { Id = 12, Name = "2", Price = 8500000 },
+        new Product { Id = 13, Name = "AirPods Pro 2", Price = 6500000 },
+        new Product { Id = 14, Name = "Apple Watch Series 9", Price = 11000000 },
+        new Product { Id = 15, Name = "Logitech MX Master 3S", Price = 2500000 },
+        new Product { Id = 16, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 },
+        new Product { Id = 16, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 },
+        new Product { Id = 13, Name = "AirPods Pro 2", Price = 6500000 },
+        new Product { Id = 14, Name = "Apple Watch Series 9", Price = 11000000 },
+        new Product { Id = 15, Name = "Logitech MX Master 3S", Price = 2500000 },
+        new Product { Id = 16, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 },
+        new Product { Id = 11, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 },
+        new Product { Id = 12, Name = "2", Price = 8500000 },
+        new Product { Id = 13, Price = 6500000 },
+        new Product { Id = 14, Name = "Apple Watch Series 9", Price = 11000000 },
+        new Product { Id = 15, Name = "Logitech MX Master 3S", Price = 2500000 },
+        new Product { Id = 16, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 },
+        new Product { Id = 16, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 },
+        new Product { Id = 13, Name = "AirPods Pro 2", Price = 6500000 },
+        new Product { Id = 14, Name = "Apple Watch Series 9", Price = 11000000 },
+        new Product { Id = 15, Name = "Logitech MX Master 3S", Price = 2500000 },
+        new Product { Id = 16, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 },
+        new Product { Id = 11, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 },
+        new Product { Id = 12, Name = "2", Price = 8500000 },
+        new Product { Id = 13, Name = "AirPods Pro 2", Price = 6500000 },
+        new Product { Id = 14, Name = "Apple Watch Series 9", Price = 11000000 },
+        new Product { Id = 15, Name = "Logitech MX Master 3S", Price = 2500000 },
+        new Product { Id = 16, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 },
+        new Product { Id = 16, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 },
     };
         foreach(Product p in products){
             p.Validate();
         }
 
-        var baseCollection = new C1DataCollection<Product>(products);
+        baseCollection = new C1DataCollection<Product>(products);
 
-        // Bọc tiếp vào Paged collection để phân trang
-        pagedItems = new C1PagedDataCollection<Product>(baseCollection)
-        {
-            PageSize = 5 // số bản ghi mỗi trang
-        };
+
+        collection2 = new C1PagedDataCollection<Product>(new VirtualCollectionCustom<Product>(baseCollection) { PageSize = PageSize }) { PageSize = PageSize };
+
     }
 
     string message = "";
-    Product test = new Product();
 
     private List<string> propsItem = new()
     {
@@ -176,6 +254,7 @@ Welcome to your new app.
             var itemsEnum = grid.ItemsSource as C1PagedDataCollection<Product>;
             if (itemsEnum == null) return;
 
+
             var column = grid.Columns[e.CellRange.Column];
             var columnBinding = column.Binding;
 
@@ -223,4 +302,23 @@ Welcome to your new app.
         }
     }
 
+
+
 }
+
+
+
+    
+
+    
+
+
+
+
+
+
+
+
+
+
+

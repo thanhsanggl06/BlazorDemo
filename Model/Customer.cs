@@ -1,16 +1,16 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+
 namespace BlazorSolution.Model
 {
-    public class Product : ObservableValidator, IValidationModel
+    public class Customer : ObservableValidator, IValidationModel
     {
         public int Id { get; set; }
 
         [Required(ErrorMessage = "Tên không được để trống")]
-        [MinLength(2, ErrorMessage = "Tên phải ít nhất 2 ký tự")]
-        public string Name { get; set; }
-        [Required(ErrorMessage = "Giá không được để trống")]
-        public decimal Price { get; set; }
+        public string FullName { get; set; }
+        [Required(ErrorMessage = "Số dt không được để trống")]
+        public string PhoneNumber { get; set; }
 
         public void Validate()
         {

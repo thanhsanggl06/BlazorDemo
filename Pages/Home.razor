@@ -4,6 +4,11 @@
 @using C1.Blazor.DataPager
 @using BlazorSolution.Model
 @using C1.Blazor.Input
+@using System.Text.Json
+@using CommunityToolkit.Mvvm.ComponentModel
+@using System.Collections
+
+@implements IDisposable
 @inject IMessageBoxService MessageBox
 
 @page "/"
@@ -21,13 +26,13 @@ Welcome to your new app.
           ShowSort="true"
           SelectionMode="GridSelectionMode.None"
           HeadersVisibility="GridHeadersVisibility.All"
-          CellTapped="OnCellTapped"
-          CellDoubleTapped="OnSort"
           ColumnOptionsMenuVisibility="GridColumnOptionsMenuVisibility.Visible"
           AutoGenerateColumns="false"
           Style="@("height:500px")"
           
 >
+          @* CellTapped="OnCellTapped" *@
+          @* CellDoubleTapped="OnSort" *@
     <FlexGridColumns >
  
         <GridColumn Binding="Id"
@@ -46,18 +51,32 @@ Welcome to your new app.
 </FlexGrid>
 <C1DataPager Source="@collection2" />
 
+@if (isLoading)
+{
+    <p>loading........</p>
+}
+
+@if(GridType != null){
+<DynamicComponent Type="GridType" Parameters="GridParameters" />
+}
+
 <C1Window @ref="myPopup" IsDarkOverlay="false" Style="@("width: 400px")">
     <PopupHeader>Window Popup Header</PopupHeader>
     <PopupContent>Hello. This is the Windows control.</PopupContent>
 </C1Window>
 
+
 <p>@message</p>
 
 
 @code {
+
+    private Type? GridType;
+    private Dictionary<string, object>? GridParameters;
+
     private GridSortMode sortMode = GridSortMode.AllData;
     private FlexGrid? flexGrid;
-    private List<Product> products = new();
+    private List<object> listData = new();
     private int PageSize = 5;
 
     private string currentSortColumn = "";
@@ -67,16 +86,19 @@ Welcome to your new app.
 
     C1PagedDataCollection<Product> collection2;
     C1DataCollection<Product> baseCollection;
-    protected override void OnInitialized()
+
+    protected override async Task OnInitializedAsync()
     {
-        LoadProducts();
+        await LoadProducts();
     }
 
     C1PagedDataCollection<Product>? pagedItems;
     C1DataPager? pagedData;
     C1DataCollection<Product> test;
     FakePagedDataCollection<Product>? test22;
-
+    VirtualCollectionCustom<Product>? virtualCollection;
+    private TaskCompletionSource<bool>? _childRenderedTcs;
+    private bool isLoading = false;
     private string GetHeaderWithIcon(string bindingName, string headerText)
     {
         var iconUp = "˄";      // U+02C4
@@ -91,101 +113,110 @@ Welcome to your new app.
         return headerText;
     }
 
-    private void LoadProducts()
+    private async Task LoadProducts()
     {
-        products = new List<Product>
-    {
-        new Product { Id = 1, Name = "1", Price = 25000000 },
-        new Product { Id = 2, Name = "iPhone 15 Pro Max", Price = 32000000 },
-        new Product { Id = 3, Name = "Samsung Galaxy S24", Price = 22000000 },
-        new Product { Id = 4, Name = "iPad Air M2", Price = 18000000 },
-        new Product { Id = 5, Name = "MacBook Pro 14", Price = 45000000 },
-        new Product { Id = 6, Name = "2", Price = 8500000 },
-        new Product { Id = 7, Name = "AirPods Pro 2", Price = 6500000 },
-        new Product { Id = 8, Name = "Apple Watch Series 9", Price = 11000000 },
-        new Product { Id = 9, Name = "Logitech MX Master 3S", Price = 2500000 },
-        new Product { Id = 11, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 },
-        new Product { Id = 12, Name = "2", Price = 8500000 },
-        new Product { Id = 13, Name = "AirPods Pro 2", Price = 6500000 },
-        new Product { Id = 14, Name = "Apple Watch Series 9", Price = 11000000 },
-        new Product { Id = 15, Name = "Logitech MX Master 3S", Price = 2500000 },
-        new Product { Id = 16, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 },
-        new Product { Id = 11, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 },
-        new Product { Id = 12, Name = "2", Price = 8500000 },
-        new Product { Id = 13, Name = "AirPods Pro 2", Price = 6500000 },
-        new Product { Id = 14, Name = "Apple Watch Series 9", Price = 11000000 },
-        new Product { Id = 15, Name = "Logitech MX Master 3S", Price = 2500000 },
-        new Product { Id = 16, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 },
-        new Product { Id = 11, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 },
-        new Product { Id = 12, Name = "2", Price = 8500000 },
-        new Product { Id = 13, Name = "AirPods Pro 2", Price = 6500000 },
-        new Product { Id = 14, Name = "Apple Watch Series 9", Price = 11000000 },
-        new Product { Id = 15, Name = "Logitech MX Master 3S", Price = 2500000 },
-        new Product { Id = 16, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 },
-        new Product { Id = 11, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 },
-        new Product { Id = 12, Name = "2", Price = 8500000 },
-        new Product { Id = 13, Name = "AirPods Pro 2", Price = 6500000 },
-        new Product { Id = 14, Name = "Apple Watch Series 9", Price = 11000000 },
-        new Product { Id = 15, Name = "Logitech MX Master 3S", Price = 2500000 },
-        new Product { Id = 16, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 },
-        new Product { Id = 11, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 },
-        new Product { Id = 12, Name = "2", Price = 8500000 },
-        new Product { Id = 13, Name = "AirPods Pro 2", Price = 6500000 },
-        new Product { Id = 14, Name = "Apple Watch Series 9", Price = 11000000 },
-        new Product { Id = 15, Name = "Logitech MX Master 3S", Price = 2500000 },
-        new Product { Id = 16, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 }, 
-        new Product { Id = 11, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 },
-        new Product { Id = 12, Name = "2", Price = 8500000 },
-        new Product { Id = 13, Name = "AirPods Pro 2", Price = 6500000 },
-        new Product { Id = 14, Name = "Apple Watch Series 9", Price = 11000000 },
-        new Product { Id = 15, Name = "Logitech MX Master 3S", Price = 2500000 },
-        new Product { Id = 16, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 },
-        new Product { Id = 11, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 },
-        new Product { Id = 12, Name = "2", Price = 8500000 },
-        new Product { Id = 13, Name = "AirPods Pro 2", Price = 6500000 },
-        new Product { Id = 14, Name = "Apple Watch Series 9", Price = 11000000 },
-        new Product { Id = 15, Name = "Logitech MX Master 3S", Price = 2500000 },
-        new Product { Id = 16, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 },
-        new Product { Id = 11, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 },
-        new Product { Id = 12, Name = "2", Price = 8500000 },
-        new Product { Id = 13, Name = "AirPods Pro 2", Price = 6500000 },
-        new Product { Id = 14, Name = "Apple Watch Series 9", Price = 11000000 },
-        new Product { Id = 15, Name = "Logitech MX Master 3S", Price = 2500000 },
-        new Product { Id = 16, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 },
-        new Product { Id = 16, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 },
-        new Product { Id = 13, Name = "AirPods Pro 2", Price = 6500000 },
-        new Product { Id = 14, Name = "Apple Watch Series 9", Price = 11000000 },
-        new Product { Id = 15, Name = "Logitech MX Master 3S", Price = 2500000 },
-        new Product { Id = 16, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 },
-        new Product { Id = 11, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 },
-        new Product { Id = 12, Name = "2", Price = 8500000 },
-        new Product { Id = 13, Price = 6500000 },
-        new Product { Id = 14, Name = "Apple Watch Series 9", Price = 11000000 },
-        new Product { Id = 15, Name = "Logitech MX Master 3S", Price = 2500000 },
-        new Product { Id = 16, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 },
-        new Product { Id = 16, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 },
-        new Product { Id = 13, Name = "AirPods Pro 2", Price = 6500000 },
-        new Product { Id = 14, Name = "Apple Watch Series 9", Price = 11000000 },
-        new Product { Id = 15, Name = "Logitech MX Master 3S", Price = 2500000 },
-        new Product { Id = 16, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 },
-        new Product { Id = 11, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 },
-        new Product { Id = 12, Name = "2", Price = 8500000 },
-        new Product { Id = 13, Name = "AirPods Pro 2", Price = 6500000 },
-        new Product { Id = 14, Name = "Apple Watch Series 9", Price = 11000000 },
-        new Product { Id = 15, Name = "Logitech MX Master 3S", Price = 2500000 },
-        new Product { Id = 16, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 },
-        new Product { Id = 16, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 },
-    };
-        foreach(Product p in products){
-            p.Validate();
+        isLoading = true;
+        Random random = new Random();
+        double x = random.NextDouble(); // 0.0 ≤ x < 1.0
+        Type unknown;
+
+        if(x > 0.5)
+        {
+            listData = new List<object>
+                {
+            new Customer { Id = 1, FullName = "", PhoneNumber = "0123456789" },
+            new Customer { Id = 1, FullName = "ABC", PhoneNumber = "0123456789" },
+            new Customer { Id = 1, FullName = "ABC", PhoneNumber = "0123456789" },
+            new Customer { Id = 1, FullName = "ABC", PhoneNumber = "0123456789" },
+            new Customer { Id = 1, FullName = "ABC", PhoneNumber = "0123456789" },
+            new Customer { Id = 1, FullName = "ABC", PhoneNumber = "0123456789" },
+            new Customer { Id = 1, FullName = "ABC", PhoneNumber = "0123456789" },
+            new Customer { Id = 1, FullName = "ABC", PhoneNumber = "0123456789" },
+            new Customer { Id = 1, FullName = "ABC", PhoneNumber = "0123456789" },
+            };
+            unknown = Type.GetType("BlazorSolution.Model.Customer, BlazorSolution");
+        }
+        else
+        {
+            listData = new List<object>
+                {
+                new Product { Id = 1, Name = "1", Price = 25000000 },
+                new Product { Id = 4, Name = "iPad Air M2", Price = 18000000 },
+                new Product { Id = 5, Name = "MacBook Pro 14", Price = 45000000 },
+                new Product { Id = 6, Name = "2", Price = 8500000 },
+                new Product { Id = 7, Name = "AirPods Pro 2", Price = 6500000 },
+                new Product { Id = 8, Name = "Apple Watch Series 9", Price = 11000000 },
+                new Product { Id = 9, Name = "Logitech MX Master 3S", Price = 2500000 },
+                new Product { Id = 11, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 },
+                new Product { Id = 2, Name = "iPhone 15 Pro Max", Price = 32000000 },
+                new Product { Id = 3, Name = "Samsung Galaxy S24", Price = 22000000 },
+                new Product { Id = 12, Name = "", Price = 8500000 },
+                new Product { Id = 13, Name = "AirPods Pro 2", Price = 6500000 },
+                new Product { Id = 14, Name = "Apple Watch Series 9", Price = 11000000 },
+                new Product { Id = 15, Name = "Logitech MX Master 3S", Price = 2500000 },
+                new Product { Id = 16, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 }
+                };
+            unknown = Type.GetType("BlazorSolution.Model.Product, BlazorSolution");
+
+
         }
 
-        baseCollection = new C1DataCollection<Product>(products);
+        //test
+        var listType = typeof(List<>).MakeGenericType(unknown);
+        var json = JsonSerializer.Serialize(listData);
+        var dataList = JsonSerializer.Deserialize(json, listType);
 
+        var enumerable = (IList) dataList;
 
-        collection2 = new C1PagedDataCollection<Product>(new VirtualCollectionCustom<Product>(baseCollection) { PageSize = PageSize }) { PageSize = PageSize };
+        foreach (var item in enumerable)
+        {
+            if (item is IValidationModel model)
+            {
+                model.Validate();
+            }
+        }
+        _childRenderedTcs = new TaskCompletionSource<bool>();
+        GridType = typeof(FlexGridView<>).MakeGenericType(unknown);
 
+        GridParameters = new()
+        {
+            ["ValidatedData"] = dataList,
+            ["PageSize"] = PageSize,
+            ["OnRendered"] = EventCallback.Factory.Create(this, OnGridLoaded)
+        };
+        await _childRenderedTcs.Task;
+        isLoading = false;
     }
+
+    private void OnGridLoaded()
+    {
+        _childRenderedTcs?.TrySetResult(true);
+    }
+
+    /// <summary>
+    /// Handler khi sort thay đổi - tự động reset về trang 1
+    /// </summary>
+    private async void OnVirtualCollectionSortChanged(object? sender, EventArgs e)
+    {
+        await InvokeAsync(async () =>
+        {
+            try
+            {
+                Console.WriteLine("Sort changed! Moving to first page...");
+
+                // Reset về trang đầu tiên
+                if (collection2 != null)
+                {
+                    await collection2.MoveToPageAsync(0);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in OnVirtualCollectionSortChanged: {ex.Message}");
+            }
+        });
+    }
+
 
     string message = "";
 
@@ -205,102 +236,73 @@ Welcome to your new app.
     }
 
 
-    private async void OnCellTapped(object sender, GridInputEventArgs e)
+    
+
+    public void Dispose()
     {
-        if (e == null) return;
-
-        if (e.CellType == GridCellType.RowHeader)
+        if (virtualCollection != null)
         {
-            var grid = sender as FlexGrid;
-            if (grid == null) return;
-
-            int rowIndex = e.CellRange.Row;
-            if (rowIndex < 0) return;
-
-            // Lấy object dữ liệu tương ứng
-            // Giả sử ItemsSource là IEnumerable<MyItem>
-            var itemsEnum = grid.ItemsSource as IEnumerable<Product>;
-            if (itemsEnum == null) return;
-
-            // Lấy item tại hàng đó
-            var item = itemsEnum.ElementAtOrDefault(rowIndex);
-            if (item == null || !item.HasErrors) return;
-
-            List<string> ErrorDetails = new();
-            foreach(var prop in propsItem)
-            {
-                var propErrs = item.GetErrors(prop);
-                if (propErrs != null && propErrs.Cast<object>().Any())
-                {
-                    foreach(var errMessage in propErrs)
-                    {
-                        ErrorDetails.Add(errMessage.ErrorMessage ?? "");
-                        await MessageBox.ErrorAsync(string.Join(Environment.NewLine, ErrorDetails));
-                    }
-                }
-            }
-
-            StateHasChanged();
+            virtualCollection.SortChanged -= OnVirtualCollectionSortChanged;
         }
     }
 
-    private async void OnSort(object sender, GridInputEventArgs e)
-    {
-        if (e.CellType == GridCellType.ColumnHeader)
-        {
-            var grid = sender as FlexGrid;
-            if (grid == null) return;
+    // private async void OnSort(object sender, GridInputEventArgs e)
+    // {
+    //     if (e.CellType == GridCellType.ColumnHeader)
+    //     {
+    //         var grid = sender as FlexGrid;
+    //         if (grid == null) return;
 
-            var itemsEnum = grid.ItemsSource as C1PagedDataCollection<Product>;
-            if (itemsEnum == null) return;
-
-
-            var column = grid.Columns[e.CellRange.Column];
-            var columnBinding = column.Binding;
-
-            var pagedCurrentIndex = itemsEnum.CurrentPage;
-            var pagedCollection = new C1PagedDataCollection<Product>("");
-
-            if (!string.IsNullOrEmpty(columnBinding))
-            {
-                // Toggle direction
-                if (currentSortColumn == columnBinding)
-                {
-                    isAscending = !isAscending;
-                }
-                else
-                {
-                    currentSortColumn = columnBinding;
-                    isAscending = true;
-                }
+    //         var itemsEnum = grid.ItemsSource as C1PagedDataCollection<Product>;
+    //         if (itemsEnum == null) return;
 
 
-                if (sortMode == GridSortMode.AllData)
-                    //Sort all data
-                    pagedCollection = GridSortHelper.SortAllData(products, columnBinding, isAscending);
-                else
-                    //Sort current page
-                    pagedCollection = GridSortHelper.SortCurrentPage(
-                       products,
-                       itemsEnum,
-                       columnBinding,
-                       isAscending
-                   );
+    //         var column = grid.Columns[e.CellRange.Column];
+    //         var columnBinding = column.Binding;
 
-                if (pagedCollection == null) return;
-                pagedCollection.PageSize = 5;
-                pagedItems = pagedCollection;
+    //         var pagedCurrentIndex = itemsEnum.CurrentPage;
+    //         var pagedCollection = new C1PagedDataCollection<Product>("");
 
-                //move to currentpage
-                if (pagedCurrentIndex > 0 && sortMode == GridSortMode.CurrentPageOnly)
-                {
-                    await pagedItems.MoveToPageAsync(pagedCurrentIndex);
-                }
+    //         if (!string.IsNullOrEmpty(columnBinding))
+    //         {
+    //             // Toggle direction
+    //             if (currentSortColumn == columnBinding)
+    //             {
+    //                 isAscending = !isAscending;
+    //             }
+    //             else
+    //             {
+    //                 currentSortColumn = columnBinding;
+    //                 isAscending = true;
+    //             }
 
-                await InvokeAsync(StateHasChanged);
-            }
-        }
-    }
+
+    //             if (sortMode == GridSortMode.AllData)
+    //                 //Sort all data
+    //                 pagedCollection = GridSortHelper.SortAllData(products, columnBinding, isAscending);
+    //             else
+    //                 //Sort current page
+    //                 pagedCollection = GridSortHelper.SortCurrentPage(
+    //                    products,
+    //                    itemsEnum,
+    //                    columnBinding,
+    //                    isAscending
+    //                );
+
+    //             if (pagedCollection == null) return;
+    //             pagedCollection.PageSize = 5;
+    //             pagedItems = pagedCollection;
+
+    //             //move to currentpage
+    //             if (pagedCurrentIndex > 0 && sortMode == GridSortMode.CurrentPageOnly)
+    //             {
+    //                 await pagedItems.MoveToPageAsync(pagedCurrentIndex);
+    //             }
+
+    //             await InvokeAsync(StateHasChanged);
+    //         }
+    //     }
+    // }
 
 
 

@@ -1,0 +1,105 @@
+﻿@typeparam TModel where TModel :  ObservableValidator, IValidationModel
+
+@using C1.Blazor.Grid
+@using C1.Blazor.Core
+@using C1.DataCollection
+@using C1.Blazor.DataPager
+@using BlazorSolution.Model
+@using C1.Blazor.Input
+@using System.Text.Json
+@using CommunityToolkit.Mvvm.ComponentModel
+@inject IMessageBoxService MessageBox
+
+
+<FlexGrid @ref="flexGrid"
+          ItemsSource="@collection2"
+          IsReadOnly="true"
+          AllowSorting="true"
+          ShowSort="true"
+          SelectionMode="GridSelectionMode.None"
+          HeadersVisibility="GridHeadersVisibility.All"
+          ColumnOptionsMenuVisibility="GridColumnOptionsMenuVisibility.Visible"
+          CellTapped="OnCellTapped"
+          AutoGenerateColumns="false"
+          Style="@("height:500px")"
+>
+          
+  
+        <FlexGridColumns >
+            @foreach (var prop in typeof(TModel).GetProperties())
+            {
+                <GridColumn Header="@prop.Name" Binding="@prop.Name" />
+            }
+    </FlexGridColumns>
+</FlexGrid>
+<C1DataPager Source="@collection2" />
+
+@code {
+    [Parameter] public List<TModel>? ValidatedData { get; set; }
+    [Parameter] public int PageSize { get; set; }
+    private FlexGrid? flexGrid;
+
+    [Parameter] public EventCallback OnRendered { get; set; }
+
+    private C1DataCollection<TModel> baseCollection { get; set; }
+    private VirtualCollectionCustom<TModel> virtualCollection { get; set; }
+    private C1PagedDataCollection<TModel> collection2 { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        baseCollection = new C1DataCollection<TModel>(ValidatedData);
+        virtualCollection = new VirtualCollectionCustom<TModel>(baseCollection) { PageSize = PageSize };
+        collection2 = new C1PagedDataCollection<TModel>(virtualCollection) { PageSize = PageSize };
+
+    }  
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await OnRendered.InvokeAsync();
+        }
+    }
+
+
+    private async void OnCellTapped(object sender, GridInputEventArgs e)
+    {
+        if (e == null) return;
+
+        if (e.CellType == GridCellType.RowHeader)
+        {
+            var grid = sender as FlexGrid;
+            if (grid == null) return;
+
+            int rowIndex = e.CellRange.Row;
+            if (rowIndex < 0) return;
+
+            // Lấy object dữ liệu tương ứng
+            // Giả sử ItemsSource là IEnumerable<MyItem>
+            var itemsEnum = grid.ItemsSource as IEnumerable<TModel>;
+            if (itemsEnum == null) return;
+
+            // Lấy item tại hàng đó
+            var item = itemsEnum.ElementAtOrDefault(rowIndex);
+            if (item == null || !item.HasErrors) return;
+
+            List<string> ErrorDetails = new();
+            foreach (var prop in typeof(TModel).GetProperties())
+            {
+                var propErrs = item.GetErrors(prop.Name);
+                if (propErrs != null && propErrs.Cast<object>().Any())
+                {
+                    foreach (var errMessage in propErrs)
+                    {
+                        ErrorDetails.Add(errMessage.ErrorMessage ?? "");
+                        await MessageBox.ErrorAsync(string.Join(Environment.NewLine, ErrorDetails));
+                    }
+                }
+            }
+
+            StateHasChanged();
+        }
+    }
+
+}

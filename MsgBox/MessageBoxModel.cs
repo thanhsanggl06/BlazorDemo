@@ -11,6 +11,16 @@
         public string YesButtonText { get; set; } = "はい"; // Có
         public string NoButtonText { get; set; } = "いいえ"; // Không
         public string DefaultValue { get; set; } = "";
+        
+        /// <summary>
+        /// Hiển thị backdrop/background cho modal (mặc định: true)
+        /// </summary>
+        public bool ShowBackdrop { get; set; } = true;
+        
+        /// <summary>
+        /// Cho phép đóng modal khi click backdrop (mặc định: true)
+        /// </summary>
+        public bool CloseOnBackdropClick { get; set; } = true;
     }
 
     public enum MessageBoxType

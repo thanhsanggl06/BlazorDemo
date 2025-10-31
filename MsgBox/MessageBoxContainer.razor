@@ -1,32 +1,42 @@
-﻿@* Components/MessageBoxContainer.razor *@
-@using C1.Blazor.Input
+﻿@* Components/MessageBoxContainer.razor - Bootstrap Modal Version *@
 @inject IMessageBoxService MessageBoxService
 @implements IDisposable
 
-@if (currentModel != null)
+@if (isVisible && currentModel != null)
 {
-    @* ⭐ SỬA DỤNG PopupHeader và PopupContent THAY VÌ Header và WindowContent *@
-        <C1Window @ref="messageWindow"
-                  Style="@windowStyle"
-                  IsModeless="false"
-                  IsDarkOverlay="false">
-            <PopupHeader>
-                @* ⭐ HEADER CONTENT *@
-                <div class="d-flex align-items-center gap-2 @GetHeaderBgClass()" style="padding: 0.5rem 0;">
-                    <div style="font-size: 20px;">
-                        @GetHeaderIcon()
-                    </div>
-                    <span class="fw-semibold">@currentModel.Title</span>
+    <!-- Bootstrap Modal with Backdrop -->
+    <div class="modal fade @(isVisible ? "show" : "")" 
+         style="display: @(isVisible ? "block" : "none");"
+         tabindex="-1" 
+         role="dialog"
+         aria-labelledby="messageBoxTitle"
+         aria-hidden="@(!isVisible)"
+         @onclick="HandleBackdropClick">
+        
+        <div class="modal-dialog modal-dialog-centered" 
+             role="document"
+             @onclick:stopPropagation>
+            <div class="modal-content shadow-lg">
+                
+                <!-- Modal Header -->
+                <div class="modal-header border-bottom @GetHeaderBorderClass()">
+                    <h5 class="modal-title d-flex align-items-center gap-2 @GetHeaderTextClass()" 
+                        id="messageBoxTitle">
+                        <span style="font-size: 1.5rem;">@GetHeaderIcon()</span>
+                        <span class="fw-semibold">@currentModel.Title</span>
+                    </h5>
+                    <button type="button" 
+                            class="btn-close" 
+                            @onclick="() => Close(MessageBoxResult.Cancel)"
+                            aria-label="Close"></button>
                 </div>
-            </PopupHeader>
 
-            <PopupContent>
-                <!-- Modal Body using Bootstrap -->
-                <div class="modal-body">
+                <!-- Modal Body -->
+                <div class="modal-body py-4">
                     <div class="d-flex align-items-start gap-3">
                         <!-- Icon -->
                         <div class="flex-shrink-0">
-                            <div class="@GetIconClass()" style="font-size: 48px;">
+                            <div class="@GetIconClass()" style="font-size: 3rem;">
                                 @GetIcon()
                             </div>
                         </div>
@@ -35,73 +45,109 @@
                         <div class="flex-grow-1">
                             @if (currentModel.Type == MessageBoxType.Prompt)
                             {
-                                <p class="mb-3">@currentModel.Message</p>
+                                <p class="mb-3 text-dark">@currentModel.Message</p>
                                 <input type="text"
-                                       class="form-control"
+                                       class="form-control form-control-lg"
                                        @bind="promptValue"
                                        @bind:event="oninput"
-                                       placeholder="@currentModel.DefaultValue" />
+                                       @ref="promptInput"
+                                       placeholder="@currentModel.DefaultValue"
+                                       autofocus />
                             }
                             else
                             {
-                                <p class="mb-0">@((MarkupString)currentModel.Message.Replace("\n", "<br/>"))</p>
+                                <p class="mb-0 text-dark fs-6">
+                                    @((MarkupString)currentModel.Message.Replace("\n", "<br/>"))
+                                </p>
                             }
                         </div>
                     </div>
                 </div>
 
-                <!-- Modal Footer using Bootstrap -->
-                <div class="modal-footer">
+                <!-- Modal Footer -->
+                <div class="modal-footer border-top bg-light">
                     @switch (currentModel.Buttons)
                     {
                         case MessageBoxButtons.OK:
-                            <button class="btn btn-primary" @onclick="() => Close(MessageBoxResult.OK)">
+                            <button type="button" 
+                                    class="btn btn-primary px-4"
+                                    @onclick="() => Close(MessageBoxResult.OK)">
+                                <i class="bi bi-check-lg me-1"></i>
                                 @currentModel.OkButtonText
                             </button>
                             break;
 
                         case MessageBoxButtons.OKCancel:
-                            <button class="btn btn-secondary" @onclick="() => Close(MessageBoxResult.Cancel)">
+                            <button type="button" 
+                                    class="btn btn-secondary px-4"
+                                    @onclick="() => Close(MessageBoxResult.Cancel)">
+                                <i class="bi bi-x-lg me-1"></i>
                                 @currentModel.CancelButtonText
                             </button>
-                            <button class="btn btn-primary" @onclick="() => Close(MessageBoxResult.OK)">
+                            <button type="button" 
+                                    class="btn btn-primary px-4"
+                                    @onclick="() => Close(MessageBoxResult.OK)">
+                                <i class="bi bi-check-lg me-1"></i>
                                 @currentModel.OkButtonText
                             </button>
                             break;
 
                         case MessageBoxButtons.YesNo:
-                            <button class="btn btn-secondary" @onclick="() => Close(MessageBoxResult.No)">
+                            <button type="button" 
+                                    class="btn btn-outline-secondary px-4"
+                                    @onclick="() => Close(MessageBoxResult.No)">
+                                <i class="bi bi-x-circle me-1"></i>
                                 @currentModel.NoButtonText
                             </button>
-                            <button class="btn btn-primary" @onclick="() => Close(MessageBoxResult.Yes)">
+                            <button type="button" 
+                                    class="btn btn-primary px-4"
+                                    @onclick="() => Close(MessageBoxResult.Yes)">
+                                <i class="bi bi-check-circle me-1"></i>
                                 @currentModel.YesButtonText
                             </button>
                             break;
 
                         case MessageBoxButtons.YesNoCancel:
-                            <button class="btn btn-secondary" @onclick="() => Close(MessageBoxResult.Cancel)">
+                            <button type="button" 
+                                    class="btn btn-secondary px-4"
+                                    @onclick="() => Close(MessageBoxResult.Cancel)">
+                                <i class="bi bi-x-lg me-1"></i>
                                 @currentModel.CancelButtonText
                             </button>
-                            <button class="btn btn-outline-secondary" @onclick="() => Close(MessageBoxResult.No)">
+                            <button type="button" 
+                                    class="btn btn-outline-secondary px-4"
+                                    @onclick="() => Close(MessageBoxResult.No)">
+                                <i class="bi bi-x-circle me-1"></i>
                                 @currentModel.NoButtonText
                             </button>
-                            <button class="btn btn-primary" @onclick="() => Close(MessageBoxResult.Yes)">
+                            <button type="button" 
+                                    class="btn btn-primary px-4"
+                                    @onclick="() => Close(MessageBoxResult.Yes)">
+                                <i class="bi bi-check-circle me-1"></i>
                                 @currentModel.YesButtonText
                             </button>
                             break;
                     }
                 </div>
-            </PopupContent>
-        </C1Window>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Separate Backdrop -->
+    @if (currentModel.ShowBackdrop)
+    {
+        <div class="modal-backdrop fade @(isVisible ? "show" : "")"></div>
+    }
 }
 
 @code {
-    private C1Window messageWindow;
-    private MessageBoxModel currentModel;
-    private TaskCompletionSource<MessageBoxResult> taskCompletion;
-    private TaskCompletionSource<string> promptTaskCompletion;
+    private MessageBoxModel? currentModel;
+    private TaskCompletionSource<MessageBoxResult>? taskCompletion;
+    private TaskCompletionSource<string>? promptTaskCompletion;
     private string promptValue = "";
-    private string windowStyle = "width: 450px; max-width: 90vw;";
+    private bool isVisible = false;
+    private ElementReference promptInput;
 
     protected override void OnInitialized()
     {
@@ -112,37 +158,49 @@
     private async Task<MessageBoxResult> ShowMessageBox(MessageBoxModel model)
     {
         currentModel = model;
-        promptValue = model.DefaultValue;
+        promptValue = model.DefaultValue ?? "";
         taskCompletion = new TaskCompletionSource<MessageBoxResult>();
 
-        await InvokeAsync(StateHasChanged);
-        await Task.Delay(100);
-
-        messageWindow?.Open();
+        await InvokeAsync(async () =>
+        {
+            StateHasChanged();
+            await Task.Delay(10);
+            isVisible = true;
+            StateHasChanged();
+        });
 
         return await taskCompletion.Task;
     }
 
-    private async Task<string> ShowPromptBox(string modelJson)
+    private async Task<string?> ShowPromptBox(string modelJson)
     {
         var model = System.Text.Json.JsonSerializer.Deserialize<MessageBoxModel>(modelJson);
+        if (model == null) return null;
+
         currentModel = model;
-        promptValue = model.DefaultValue;
+        promptValue = model.DefaultValue ?? "";
         promptTaskCompletion = new TaskCompletionSource<string>();
 
-        await InvokeAsync(StateHasChanged);
-        await Task.Delay(100);
-
-        messageWindow?.Open();
+        await InvokeAsync(async () =>
+        {
+            StateHasChanged();
+            await Task.Delay(10);
+            isVisible = true;
+            StateHasChanged();
+        });
 
         return await promptTaskCompletion.Task;
     }
 
-    private void Close(MessageBoxResult result)
+    private async void Close(MessageBoxResult result)
     {
-        messageWindow?.Close();
+        // Fade out animation
+        isVisible = false;
+        StateHasChanged();
+        await Task.Delay(150);
 
-        if (currentModel.Type == MessageBoxType.Prompt)
+        // Complete the task
+        if (currentModel?.Type == MessageBoxType.Prompt)
         {
             if (result == MessageBoxResult.OK)
             {
@@ -163,7 +221,28 @@
         StateHasChanged();
     }
 
-    private string GetHeaderBgClass()
+    private void HandleBackdropClick()
+    {
+        if (currentModel?.CloseOnBackdropClick == true)
+        {
+            Close(MessageBoxResult.Cancel);
+        }
+    }
+
+    private string GetHeaderBorderClass()
+    {
+        return currentModel?.Type switch
+        {
+            MessageBoxType.Success => "border-success border-2",
+            MessageBoxType.Error => "border-danger border-2",
+            MessageBoxType.Warning => "border-warning border-2",
+            MessageBoxType.Question => "border-info border-2",
+            MessageBoxType.Prompt => "border-secondary border-2",
+            _ => "border-primary border-2"
+        };
+    }
+
+    private string GetHeaderTextClass()
     {
         return currentModel?.Type switch
         {

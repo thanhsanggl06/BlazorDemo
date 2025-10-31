@@ -25,6 +25,36 @@
         </div>
     }
 
+    <!-- Backdrop Options Demo -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm border-primary">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-gear-fill"></i> Backdrop Options (新機能)</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <button class="btn btn-outline-primary w-100" @onclick="ShowWithBackdrop">
+                                <i class="bi bi-square-fill"></i> With Backdrop (デフォルト)
+                            </button>
+                        </div>
+                        <div class="col-md-4">
+                            <button class="btn btn-outline-secondary w-100" @onclick="ShowWithoutBackdrop">
+                                <i class="bi bi-square"></i> Without Backdrop
+                            </button>
+                        </div>
+                        <div class="col-md-4">
+                            <button class="btn btn-outline-warning w-100" @onclick="ShowNoBackdropClose">
+                                <i class="bi bi-lock-fill"></i> Backdrop No Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Basic Alerts -->
     <div class="row mb-4">
         <div class="col-12">
@@ -279,6 +309,56 @@
     private int errorCount = 0;
     private int warningCount = 0;
     private int infoCount = 0;
+
+    // ============ BACKDROP OPTIONS DEMO ============
+
+    private async Task ShowWithBackdrop()
+    {
+        await MessageBox.ShowAsync(new MessageBoxModel
+        {
+            Title = "Backdrop有効",
+            Message = "これは通常のモーダルです。\n\n背景をクリックすると閉じます。",
+            Type = MessageBoxType.Info,
+            ShowBackdrop = false,
+            CloseOnBackdropClick = true
+        });
+
+        resultMessage = "✓ Backdrop有効モードで表示されました";
+        lastResultType = "info";
+        infoCount++;
+    }
+
+    private async Task ShowWithoutBackdrop()
+    {
+        await MessageBox.ShowAsync(new MessageBoxModel
+        {
+            Title = "Backdrop無効",
+            Message = "背景がありません。\n\nモーダルの後ろの要素が見えます。",
+            Type = MessageBoxType.Info,
+            ShowBackdrop = false,
+            CloseOnBackdropClick = false
+        });
+
+        resultMessage = "✓ Backdrop無効モードで表示されました";
+        lastResultType = "info";
+        infoCount++;
+    }
+
+    private async Task ShowNoBackdropClose()
+    {
+        await MessageBox.ShowAsync(new MessageBoxModel
+        {
+            Title = "Backdrop クリック無効",
+            Message = "背景がありますが、クリックしても閉じません。\n\nボタンでのみ閉じることができます。",
+            Type = MessageBoxType.Warning,
+            ShowBackdrop = true,
+            CloseOnBackdropClick = false
+        });
+
+        resultMessage = "✓ Backdrop クリック無効モードで表示されました";
+        lastResultType = "warning";
+        warningCount++;
+    }
 
     // ============ BASIC ALERTS ============
 

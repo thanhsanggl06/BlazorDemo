@@ -50,7 +50,7 @@
                         <div class="flex-grow-1">
                             @if (currentModel.Type == MessageBoxType.Prompt)
                             {
-                                <p class="mb-3 text-dark">@currentModel.Message</p>
+                                <p class="mb-3 text-dark @GetMessageFontClass()">@currentModel.Message</p>
                                 <input type="text"
                                        class="form-control form-control-lg"
                                        @bind="promptValue"
@@ -61,7 +61,7 @@
                             }
                             else
                             {
-                                <p class="mb-0 text-dark fs-6">
+                                <p class="mb-0 text-dark @GetMessageFontClass()">
                                     @((MarkupString)currentModel.Message.Replace("\n", "<br/>"))
                                 </p>
                             }
@@ -296,6 +296,16 @@
             MessageBoxType.Question => "/icons/question-circle-fill.svg",
             MessageBoxType.Prompt => "/icons/pencil-square.svg",
             _ => "/icons/info-circle-fill.svg"
+        };
+    }
+
+    private string GetMessageFontClass()
+    {
+        return currentModel?.MessageFontSize?.ToLower() switch
+        {
+            "small" => "message-font-small",
+            "large" => "message-font-large",
+            _ => "message-font-normal"
         };
     }
 

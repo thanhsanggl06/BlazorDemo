@@ -26,6 +26,11 @@
         /// Hiển thị icon trong body của modal (mặc định: true)
         /// </summary>
         public bool ShowBodyIcon { get; set; } = true;
+        
+        /// <summary>
+        /// Kích thước font cho message body: "small", "normal", "large" (mặc định: "normal")
+        /// </summary>
+        public string MessageFontSize { get; set; } = "normal";
     }
 
     public enum MessageBoxType

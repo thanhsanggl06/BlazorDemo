@@ -69,6 +69,27 @@
                             </button>
                         </div>
                     </div>
+                    <hr />
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <h6 class="text-muted">Font Size Options</h6>
+                        </div>
+                        <div class="col-md-4">
+                            <button class="btn btn-outline-secondary w-100" @onclick="ShowSmallFont">
+                                <i class="bi bi-fonts"></i> Small Font
+                            </button>
+                        </div>
+                        <div class="col-md-4">
+                            <button class="btn btn-outline-primary w-100" @onclick="ShowNormalFont">
+                                <i class="bi bi-fonts"></i> Normal Font (デフォルト)
+                            </button>
+                        </div>
+                        <div class="col-md-4">
+                            <button class="btn btn-outline-dark w-100" @onclick="ShowLargeFont">
+                                <i class="bi bi-fonts"></i> Large Font
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -409,6 +430,53 @@
         resultMessage = "✓ Body Icon 無効モードで表示されました";
         lastResultType = "info";
         infoCount++;
+    }
+
+    // ============ FONT SIZE OPTIONS DEMO ============
+
+    private async Task ShowSmallFont()
+    {
+        await MessageBox.ShowAsync(new MessageBoxModel
+        {
+            Title = "Small Font Size",
+            Message = "これは小さいフォントサイズのメッセージです。\n\n詳細な情報や長いテキストを表示する際に便利です。\n\nユーザーは読みやすいサイズを選択できます。",
+            Type = MessageBoxType.Info,
+            MessageFontSize = "small"
+        });
+
+        resultMessage = "✓ Small フォントで表示されました";
+        lastResultType = "info";
+        infoCount++;
+    }
+
+    private async Task ShowNormalFont()
+    {
+        await MessageBox.ShowAsync(new MessageBoxModel
+        {
+            Title = "Normal Font Size",
+            Message = "これは通常のフォントサイズのメッセージです。\n\nデフォルトの設定で、最も読みやすいサイズです。\n\nほとんどの場合、このサイズが推奨されます。",
+            Type = MessageBoxType.Success,
+            MessageFontSize = "normal"
+        });
+
+        resultMessage = "✓ Normal フォントで表示されました (デフォルト)";
+        lastResultType = "success";
+        successCount++;
+    }
+
+    private async Task ShowLargeFont()
+    {
+        await MessageBox.ShowAsync(new MessageBoxModel
+        {
+            Title = "Large Font Size",
+            Message = "これは大きいフォントサイズのメッセージです。\n\n重要な情報や警告を強調する際に便利です。\n\nユーザーの注目を引きます。",
+            Type = MessageBoxType.Warning,
+            MessageFontSize = "large"
+        });
+
+        resultMessage = "✓ Large フォントで表示されました";
+        lastResultType = "warning";
+        warningCount++;
     }
 
     // ============ BASIC ALERTS ============
@@ -870,4 +938,4 @@
             _ => "bi-chat-square-dots"
         };
     }
-}
+}}

@@ -194,3 +194,19 @@
     line-height: 1.6;
     color: #212529;
 }
+
+/* Message font size variants */
+.message-font-small[b-0av9xf34qz] {
+    font-size: 0.875rem !important;
+    line-height: 1.5;
+}
+
+.message-font-normal[b-0av9xf34qz] {
+    font-size: 1rem !important;
+    line-height: 1.6;
+}
+
+.message-font-large[b-0av9xf34qz] {
+    font-size: 1.125rem !important;
+    line-height: 1.7;
+}

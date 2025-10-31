@@ -374,6 +374,22 @@ main[b-dj6azzh6l4] {
     line-height: 1.6;
     color: #212529;
 }
+
+/* Message font size variants */
+.message-font-small[b-0av9xf34qz] {
+    font-size: 0.875rem !important;
+    line-height: 1.5;
+}
+
+.message-font-normal[b-0av9xf34qz] {
+    font-size: 1rem !important;
+    line-height: 1.6;
+}
+
+.message-font-large[b-0av9xf34qz] {
+    font-size: 1.125rem !important;
+    line-height: 1.7;
+}
 /* /Pages/AdvanceForm.razor.rz.scp.css */
 select.skeleton-loading[b-nhq3e6t3wa],
 select.skeleton-loading:disabled[b-nhq3e6t3wa] {

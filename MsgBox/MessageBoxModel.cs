@@ -21,6 +21,11 @@
         /// Cho phép đóng modal khi click backdrop (mặc định: true)
         /// </summary>
         public bool CloseOnBackdropClick { get; set; } = true;
+        
+        /// <summary>
+        /// Hiển thị icon trong body của modal (mặc định: true)
+        /// </summary>
+        public bool ShowBodyIcon { get; set; } = true;
     }
 
     public enum MessageBoxType

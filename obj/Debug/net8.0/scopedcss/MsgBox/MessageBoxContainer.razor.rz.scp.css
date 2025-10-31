@@ -96,6 +96,38 @@
     box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
 }
 
+/* SVG Icon Styling */
+.modal-header img[b-0av9xf34qz],
+.modal-body img[b-0av9xf34qz],
+.modal-footer img[b-0av9xf34qz] {
+    vertical-align: middle;
+}
+
+/* Icon color filters */
+.icon-success[b-0av9xf34qz] {
+    filter: invert(50%) sepia(81%) saturate(417%) hue-rotate(82deg) brightness(96%) contrast(89%);
+}
+
+.icon-danger[b-0av9xf34qz] {
+    filter: invert(29%) sepia(89%) saturate(3026%) hue-rotate(342deg) brightness(93%) contrast(86%);
+}
+
+.icon-warning[b-0av9xf34qz] {
+    filter: invert(77%) sepia(89%) saturate(1464%) hue-rotate(359deg) brightness(101%) contrast(101%);
+}
+
+.icon-info[b-0av9xf34qz] {
+    filter: invert(72%) sepia(81%) saturate(3161%) hue-rotate(161deg) brightness(96%) contrast(96%);
+}
+
+.icon-secondary[b-0av9xf34qz] {
+    filter: invert(52%) sepia(10%) saturate(589%) hue-rotate(169deg) brightness(94%) contrast(89%);
+}
+
+.icon-primary[b-0av9xf34qz] {
+    filter: invert(31%) sepia(97%) saturate(2158%) hue-rotate(206deg) brightness(100%) contrast(101%);
+}
+
 /* Responsive Mobile */
 @media (max-width: 576px) {
     .modal-dialog[b-0av9xf34qz] {
@@ -126,8 +158,9 @@
     }
 
     /* Icon size mobile */
-    .modal-body .flex-shrink-0 > div[b-0av9xf34qz] {
-        font-size: 2.5rem !important;
+    .modal-body .flex-shrink-0 img[b-0av9xf34qz] {
+        width: 40px !important;
+        height: 40px !important;
     }
 }
 
@@ -156,41 +189,8 @@
     border-color: #6c757d !important;
 }
 
-/* Button icon styling */
-.modal-footer .btn i[b-0av9xf34qz] {
-    font-size: 1rem;
-    vertical-align: middle;
-}
-
 /* Improve text readability */
 .modal-body p[b-0av9xf34qz] {
     line-height: 1.6;
     color: #212529;
-}
-
-.c1-window[b-0av9xf34qz] {
-    border-radius: 0.5rem;
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-
-}
-
-    .c1-window .c1-window-header[b-0av9xf34qz] {
-        border-radius: 0.5rem 0.5rem 0 0;
-        border-bottom: 1px solid #dee2e6;
-    }
-
-    .c1-window .c1-window-content[b-0av9xf34qz] {
-        padding: 0;
-    }
-
-
-@media (max-width: 576px) {
-    .modal-footer[b-0av9xf34qz] {
-        flex-direction: column-reverse;
-        gap: 0.5rem;
-    }
-
-        .modal-footer .btn[b-0av9xf34qz] {
-            width: 100%;
-        }
 }

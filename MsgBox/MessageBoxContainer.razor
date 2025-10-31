@@ -22,7 +22,7 @@
                 <div class="modal-header border-bottom @GetHeaderBorderClass()">
                     <h5 class="modal-title d-flex align-items-center gap-2 @GetHeaderTextClass()" 
                         id="messageBoxTitle">
-                        <span style="font-size: 1.5rem;">@GetHeaderIcon()</span>
+                        <img src="@GetHeaderIconPath()" alt="icon" width="24" height="24" class="@GetIconClass()" />
                         <span class="fw-semibold">@currentModel.Title</span>
                     </h5>
                     <button type="button" 
@@ -34,12 +34,17 @@
                 <!-- Modal Body -->
                 <div class="modal-body py-4">
                     <div class="d-flex align-items-start gap-3">
-                        <!-- Icon -->
-                        <div class="flex-shrink-0">
-                            <div class="@GetIconClass()" style="font-size: 3rem;">
-                                @GetIcon()
+                        <!-- Icon (Optional) -->
+                        @if (currentModel.ShowBodyIcon)
+                        {
+                            <div class="flex-shrink-0">
+                                <img src="@GetIconPath()" 
+                                     alt="@currentModel.Type" 
+                                     width="48" 
+                                     height="48"
+                                     class="@GetIconClass()" />
                             </div>
-                        </div>
+                        }
 
                         <!-- Message Content -->
                         <div class="flex-grow-1">
@@ -72,7 +77,7 @@
                             <button type="button" 
                                     class="btn btn-primary px-4"
                                     @onclick="() => Close(MessageBoxResult.OK)">
-                                <i class="bi bi-check-lg me-1"></i>
+                                <img src="/icons/check-lg.svg" alt="check" width="16" height="16" class="me-1" />
                                 @currentModel.OkButtonText
                             </button>
                             break;
@@ -81,13 +86,13 @@
                             <button type="button" 
                                     class="btn btn-secondary px-4"
                                     @onclick="() => Close(MessageBoxResult.Cancel)">
-                                <i class="bi bi-x-lg me-1"></i>
+                                <img src="/icons/x-lg.svg" alt="cancel" width="16" height="16" class="me-1" />
                                 @currentModel.CancelButtonText
                             </button>
                             <button type="button" 
                                     class="btn btn-primary px-4"
                                     @onclick="() => Close(MessageBoxResult.OK)">
-                                <i class="bi bi-check-lg me-1"></i>
+                                <img src="/icons/check-lg.svg" alt="ok" width="16" height="16" class="me-1" />
                                 @currentModel.OkButtonText
                             </button>
                             break;
@@ -96,13 +101,13 @@
                             <button type="button" 
                                     class="btn btn-outline-secondary px-4"
                                     @onclick="() => Close(MessageBoxResult.No)">
-                                <i class="bi bi-x-circle me-1"></i>
+                                <img src="/icons/x-circle.svg" alt="no" width="16" height="16" class="me-1" />
                                 @currentModel.NoButtonText
                             </button>
                             <button type="button" 
                                     class="btn btn-primary px-4"
                                     @onclick="() => Close(MessageBoxResult.Yes)">
-                                <i class="bi bi-check-circle me-1"></i>
+                                <img src="/icons/check-circle.svg" alt="yes" width="16" height="16" class="me-1" />
                                 @currentModel.YesButtonText
                             </button>
                             break;
@@ -111,19 +116,19 @@
                             <button type="button" 
                                     class="btn btn-secondary px-4"
                                     @onclick="() => Close(MessageBoxResult.Cancel)">
-                                <i class="bi bi-x-lg me-1"></i>
+                                <img src="/icons/x-lg.svg" alt="cancel" width="16" height="16" class="me-1" />
                                 @currentModel.CancelButtonText
                             </button>
                             <button type="button" 
                                     class="btn btn-outline-secondary px-4"
                                     @onclick="() => Close(MessageBoxResult.No)">
-                                <i class="bi bi-x-circle me-1"></i>
+                                <img src="/icons/x-circle.svg" alt="no" width="16" height="16" class="me-1" />
                                 @currentModel.NoButtonText
                             </button>
                             <button type="button" 
                                     class="btn btn-primary px-4"
                                     @onclick="() => Close(MessageBoxResult.Yes)">
-                                <i class="bi bi-check-circle me-1"></i>
+                                <img src="/icons/check-circle.svg" alt="yes" width="16" height="16" class="me-1" />
                                 @currentModel.YesButtonText
                             </button>
                             break;
@@ -259,41 +264,39 @@
     {
         return currentModel?.Type switch
         {
-            MessageBoxType.Success => "text-success",
-            MessageBoxType.Error => "text-danger",
-            MessageBoxType.Warning => "text-warning",
-            MessageBoxType.Question => "text-info",
-            MessageBoxType.Prompt => "text-secondary",
-            _ => "text-primary"
+            MessageBoxType.Success => "icon-success",
+            MessageBoxType.Error => "icon-danger",
+            MessageBoxType.Warning => "icon-warning",
+            MessageBoxType.Question => "icon-info",
+            MessageBoxType.Prompt => "icon-secondary",
+            _ => "icon-primary"
         };
     }
 
-    private MarkupString GetHeaderIcon()
+    private string GetHeaderIconPath()
     {
         return currentModel?.Type switch
         {
-            MessageBoxType.Success => (MarkupString)"<i class='bi bi-check-circle-fill'></i>",
-            MessageBoxType.Error => (MarkupString)"<i class='bi bi-x-circle-fill'></i>",
-            MessageBoxType.Warning => (MarkupString)"<i class='bi bi-exclamation-triangle-fill'></i>",
-            MessageBoxType.Question => (MarkupString)"<i class='bi bi-question-circle-fill'></i>",
-            MessageBoxType.Prompt => (MarkupString)"<i class='bi bi-pencil-square'></i>",
-            _ => (MarkupString)"<i class='bi bi-info-circle-fill'></i>"
+            MessageBoxType.Success => "/icons/check-circle-fill.svg",
+            MessageBoxType.Error => "/icons/x-circle-fill.svg",
+            MessageBoxType.Warning => "/icons/exclamation-triangle-fill.svg",
+            MessageBoxType.Question => "/icons/question-circle-fill.svg",
+            MessageBoxType.Prompt => "/icons/pencil-square.svg",
+            _ => "/icons/info-circle-fill.svg"
         };
     }
 
-    private MarkupString GetIcon()
+    private string GetIconPath()
     {
-        var icon = currentModel?.Type switch
+        return currentModel?.Type switch
         {
-            MessageBoxType.Success => "bi-check-circle-fill",
-            MessageBoxType.Error => "bi-x-circle-fill",
-            MessageBoxType.Warning => "bi-exclamation-triangle-fill",
-            MessageBoxType.Question => "bi-question-circle-fill",
-            MessageBoxType.Prompt => "bi-pencil-square",
-            _ => "bi-info-circle-fill"
+            MessageBoxType.Success => "/icons/check-circle-fill.svg",
+            MessageBoxType.Error => "/icons/x-circle-fill.svg",
+            MessageBoxType.Warning => "/icons/exclamation-triangle-fill.svg",
+            MessageBoxType.Question => "/icons/question-circle-fill.svg",
+            MessageBoxType.Prompt => "/icons/pencil-square.svg",
+            _ => "/icons/info-circle-fill.svg"
         };
-
-        return (MarkupString)$"<i class='bi {icon}'></i>";
     }
 
     public void Dispose()

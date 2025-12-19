@@ -47,7 +47,7 @@
 
 Welcome to your new app.
 
-<FlexGrid @ref="flexGrid"
+@* <FlexGrid @ref="flexGrid"
           ItemsSource="@collection2"
           IsReadOnly="true"
           AllowSorting="true"
@@ -56,12 +56,12 @@ Welcome to your new app.
           HeadersVisibility="GridHeadersVisibility.All"
           ColumnOptionsMenuVisibility="GridColumnOptionsMenuVisibility.Visible"
           AutoGenerateColumns="false"
-          Style="@("height:500px")"
+          Style="@("height:500px")" *@
           
 >
           @* CellTapped="OnCellTapped" *@
           @* CellDoubleTapped="OnSort" *@
-    <FlexGridColumns >
+ @*    <FlexGridColumns >
  
         <GridColumn Binding="Id"
                     Header="@GetHeaderWithIcon("Id", "ID")"
@@ -77,15 +77,15 @@ Welcome to your new app.
                     Format="N0" />
     </FlexGridColumns>
 </FlexGrid>
-<C1DataPager Source="@collection2" />
+<C1DataPager  Source="@collection2" /> *@
 
 @if (isLoading)
 {
     <p>loading........</p>
 }
 
-@if(GridType != null){
-<DynamicComponent Type="GridType" Parameters="GridParameters" />
+@if (GridType != null && GridParameters!= null){
+    <DynamicComponent Type="GridType" Parameters="GridParameters" />
 }
 
 <C1Window @ref="myPopup" IsDarkOverlay="false" Style="@("width: 400px")">
@@ -161,6 +161,42 @@ Welcome to your new app.
             new Customer { Id = 1, FullName = "ABC", PhoneNumber = "0123456789" },
             new Customer { Id = 1, FullName = "ABC", PhoneNumber = "0123456789" },
             new Customer { Id = 1, FullName = "ABC", PhoneNumber = "0123456789" },
+            new Customer { Id = 1, FullName = "", PhoneNumber = "0123456789" },
+            new Customer { Id = 1, FullName = "ABC", PhoneNumber = "0123456789" },
+            new Customer { Id = 1, FullName = "ABC", PhoneNumber = "0123456789" },
+            new Customer { Id = 1, FullName = "ABC", PhoneNumber = "0123456789" },
+            new Customer { Id = 1, FullName = "ABC", PhoneNumber = "0123456789" },
+            new Customer { Id = 1, FullName = "ABC", PhoneNumber = "0123456789" },
+            new Customer { Id = 1, FullName = "ABC", PhoneNumber = "0123456789" },
+            new Customer { Id = 1, FullName = "ABC", PhoneNumber = "0123456789" },
+            new Customer { Id = 1, FullName = "ABC", PhoneNumber = "0123456789" },
+            new Customer { Id = 1, FullName = "", PhoneNumber = "0123456789" },
+            new Customer { Id = 1, FullName = "ABC", PhoneNumber = "0123456789" },
+            new Customer { Id = 1, FullName = "ABC", PhoneNumber = "0123456789" },
+            new Customer { Id = 1, FullName = "ABC", PhoneNumber = "0123456789" },
+            new Customer { Id = 1, FullName = "ABC", PhoneNumber = "0123456789" },
+            new Customer { Id = 1, FullName = "ABC", PhoneNumber = "0123456789" },
+            new Customer { Id = 1, FullName = "ABC", PhoneNumber = "0123456789" },
+            new Customer { Id = 1, FullName = "ABC", PhoneNumber = "0123456789" },
+            new Customer { Id = 1, FullName = "ABC", PhoneNumber = "0123456789" },
+            new Customer { Id = 1, FullName = "", PhoneNumber = "0123456789" },
+            new Customer { Id = 1, FullName = "ABC", PhoneNumber = "0123456789" },
+            new Customer { Id = 1, FullName = "ABC", PhoneNumber = "0123456789" },
+            new Customer { Id = 1, FullName = "ABC", PhoneNumber = "0123456789" },
+            new Customer { Id = 1, FullName = "ABC", PhoneNumber = "0123456789" },
+            new Customer { Id = 1, FullName = "ABC", PhoneNumber = "0123456789" },
+            new Customer { Id = 1, FullName = "ABC", PhoneNumber = "0123456789" },
+            new Customer { Id = 1, FullName = "ABC", PhoneNumber = "0123456789" },
+            new Customer { Id = 1, FullName = "ABC", PhoneNumber = "0123456789" },
+            new Customer { Id = 1, FullName = "", PhoneNumber = "0123456789" },
+            new Customer { Id = 1, FullName = "ABC", PhoneNumber = "0123456789" },
+            new Customer { Id = 1, FullName = "ABC", PhoneNumber = "0123456789" },
+            new Customer { Id = 1, FullName = "ABC", PhoneNumber = "0123456789" },
+            new Customer { Id = 1, FullName = "ABC", PhoneNumber = "0123456789" },
+            new Customer { Id = 1, FullName = "ABC", PhoneNumber = "0123456789" },
+            new Customer { Id = 1, FullName = "ABC", PhoneNumber = "0123456789" },
+            new Customer { Id = 1, FullName = "ABC", PhoneNumber = "0123456789" },
+            new Customer { Id = 1, FullName = "ABC", PhoneNumber = "0123456789" },
             };
             unknown = Type.GetType("BlazorSolution.Model.Customer, BlazorSolution");
         }
@@ -168,6 +204,51 @@ Welcome to your new app.
         {
             listData = new List<object>
                 {
+                new Product { Id = 1, Name = "1", Price = 25000000 },
+                new Product { Id = 4, Name = "iPad Air M2", Price = 18000000 },
+                new Product { Id = 5, Name = "MacBook Pro 14", Price = 45000000 },
+                new Product { Id = 6, Name = "2", Price = 8500000 },
+                new Product { Id = 7, Name = "AirPods Pro 2", Price = 6500000 },
+                new Product { Id = 8, Name = "Apple Watch Series 9", Price = 11000000 },
+                new Product { Id = 9, Name = "Logitech MX Master 3S", Price = 2500000 },
+                new Product { Id = 11, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 },
+                new Product { Id = 2, Name = "iPhone 15 Pro Max", Price = 32000000 },
+                new Product { Id = 3, Name = "Samsung Galaxy S24", Price = 22000000 },
+                new Product { Id = 12, Name = "", Price = 8500000 },
+                new Product { Id = 13, Name = "AirPods Pro 2", Price = 6500000 },
+                new Product { Id = 14, Name = "Apple Watch Series 9", Price = 11000000 },
+                new Product { Id = 15, Name = "Logitech MX Master 3S", Price = 2500000 },
+                new Product { Id = 16, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 },
+                new Product { Id = 1, Name = "1", Price = 25000000 },
+                new Product { Id = 4, Name = "iPad Air M2", Price = 18000000 },
+                new Product { Id = 5, Name = "MacBook Pro 14", Price = 45000000 },
+                new Product { Id = 6, Name = "2", Price = 8500000 },
+                new Product { Id = 7, Name = "AirPods Pro 2", Price = 6500000 },
+                new Product { Id = 8, Name = "Apple Watch Series 9", Price = 11000000 },
+                new Product { Id = 9, Name = "Logitech MX Master 3S", Price = 2500000 },
+                new Product { Id = 11, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 },
+                new Product { Id = 2, Name = "iPhone 15 Pro Max", Price = 32000000 },
+                new Product { Id = 3, Name = "Samsung Galaxy S24", Price = 22000000 },
+                new Product { Id = 12, Name = "", Price = 8500000 },
+                new Product { Id = 13, Name = "AirPods Pro 2", Price = 6500000 },
+                new Product { Id = 14, Name = "Apple Watch Series 9", Price = 11000000 },
+                new Product { Id = 15, Name = "Logitech MX Master 3S", Price = 2500000 },
+                new Product { Id = 16, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 },
+                new Product { Id = 1, Name = "1", Price = 25000000 },
+                new Product { Id = 4, Name = "iPad Air M2", Price = 18000000 },
+                new Product { Id = 5, Name = "MacBook Pro 14", Price = 45000000 },
+                new Product { Id = 6, Name = "2", Price = 8500000 },
+                new Product { Id = 7, Name = "AirPods Pro 2", Price = 6500000 },
+                new Product { Id = 8, Name = "Apple Watch Series 9", Price = 11000000 },
+                new Product { Id = 9, Name = "Logitech MX Master 3S", Price = 2500000 },
+                new Product { Id = 11, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 },
+                new Product { Id = 2, Name = "iPhone 15 Pro Max", Price = 32000000 },
+                new Product { Id = 3, Name = "Samsung Galaxy S24", Price = 22000000 },
+                new Product { Id = 12, Name = "", Price = 8500000 },
+                new Product { Id = 13, Name = "AirPods Pro 2", Price = 6500000 },
+                new Product { Id = 14, Name = "Apple Watch Series 9", Price = 11000000 },
+                new Product { Id = 15, Name = "Logitech MX Master 3S", Price = 2500000 },
+                new Product { Id = 16, Name = "Dell UltraSharp 27 Monitor", Price = 12000000 },
                 new Product { Id = 1, Name = "1", Price = 25000000 },
                 new Product { Id = 4, Name = "iPad Air M2", Price = 18000000 },
                 new Product { Id = 5, Name = "MacBook Pro 14", Price = 45000000 },
@@ -210,10 +291,7 @@ Welcome to your new app.
         {
             ["ValidatedData"] = dataList,
             ["PageSize"] = PageSize,
-            ["OnRendered"] = EventCallback.Factory.Create(this, OnGridLoaded)
         };
-        await Task.Yield();
-        await _childRenderedTcs.Task;
         isLoading = false;
     }
 

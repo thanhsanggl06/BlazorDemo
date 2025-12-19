@@ -1,0 +1,144 @@
+﻿@using C1.DataCollection
+@using C1.Blazor.DataPager
+@inherits C1DataPager
+
+
+<div class="jp-paging">
+    <span>表示件数：</span>
+    <span>@_count 件</span>
+
+    <span class="ml-3">ページ：</span>
+
+        <select value="@_currentPage" @onchange="OnPageChanged">
+            @foreach (var p in _pageIndexes)
+            {
+                <option value="@p">
+                    @(p + 1)
+                </option>
+            }
+        </select>
+
+    <span>/ @_pagesCount</span>
+
+    <!-- PREV -->
+    <button class="icon-btn"
+            @onclick="PrevPage"
+            disabled="@disablePrev">
+        <svg width="12" height="12" viewBox="0 0 24 24">
+            <path d="M15 18l-6-6 6-6"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round" />
+        </svg>
+    </button>
+
+    <span>次へ</span>
+
+    <!-- NEXT -->
+    <button class="icon-btn"
+            @onclick="NextPage"
+            disabled="@disableNext">
+        <svg width="12" height="12" viewBox="0 0 24 24">
+            <path d="M9 6l6 6-6 6"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round" />
+        </svg>
+    </button>
+</div>
+
+    
+@code {
+    private int _currentPage => Source.GetCurrentPage();
+    private int _pagesCount => Source.GetPagesCount();
+    private int _count => Source.Count();
+
+    private List<int> _pageIndexes = new();
+
+    private bool disablePrev => _currentPage == 0;
+    private bool disableNext => _currentPage >= _pagesCount - 1;
+
+    private int _lastRenderedPage = -1;
+    private int _lastRenderedPagesCount = -1;
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        UpdatePageIndexes();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+        
+        // Check if page state has changed
+        if (_lastRenderedPage != _currentPage || _lastRenderedPagesCount != _pagesCount)
+        {
+            _lastRenderedPage = _currentPage;
+            _lastRenderedPagesCount = _pagesCount;
+            UpdatePageIndexes();
+            StateHasChanged();
+        }
+    }
+
+    private void UpdatePageIndexes()
+    {
+        _pageIndexes = BuildPageIndexes(_currentPage, _pagesCount);
+    }
+
+
+    private async Task OnPageChanged(ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value?.ToString(), out var page))
+        {
+            if (page >= 0 && page < _pagesCount)
+            {
+                await Source.MoveToPageAsync(page, default);
+            }
+        }
+    }
+
+    private async Task NextPage()
+    {
+        if (!disableNext)
+        {
+            await Source.MoveToPageAsync(_currentPage + 1, default);
+        }
+    }
+
+    private async Task PrevPage()
+    {
+        if (!disablePrev)
+        {
+            await Source.MoveToPageAsync(_currentPage - 1, default);
+        }
+    }
+
+    private static List<int> BuildPageIndexes(
+        int currentPage,
+        int pagesCount,
+        int window = 2)
+    {
+        var set = new HashSet<int>();
+
+        if (pagesCount <= 0)
+            return new();
+
+        // First & Last
+        set.Add(0);
+        set.Add(pagesCount - 1);
+
+        for (int i = currentPage - window; i <= currentPage + window; i++)
+        {
+            if (i >= 0 && i < pagesCount)
+                set.Add(i);
+        }
+
+        return set.OrderBy(x => x).ToList();
+    }
+}
+

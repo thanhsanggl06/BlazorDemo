@@ -1352,7 +1352,6 @@ D:\NetSource\BlazorSolution\obj\Debug\net8.0\scopedcss\bundle\BlazorSolution.sty
 D:\NetSource\BlazorSolution\obj\Debug\net8.0\scopedcss\projectbundle\BlazorSolution.bundle.scp.css
 D:\NetSource\BlazorSolution\obj\Debug\net8.0\blazor.build.boot-extension.json
 D:\NetSource\BlazorSolution\obj\Debug\net8.0\blazor.boot.json
-D:\NetSource\BlazorSolution\obj\Debug\net8.0\compressed\eutzfcx8ba-mv535bwyet.gz
 D:\NetSource\BlazorSolution\obj\Debug\net8.0\compressed\r6akbhhbj7-2tfhd4ndrc.gz
 D:\NetSource\BlazorSolution\obj\Debug\net8.0\compressed\yitcvc3a1i-7598fplau7.gz
 D:\NetSource\BlazorSolution\obj\Debug\net8.0\compressed\fcdc88mnqm-2pjipa8u4b.gz
@@ -1731,7 +1730,10 @@ D:\NetSource\BlazorSolution\bin\Debug\net8.0\wwwroot\_framework\icudt.dat.gz
 D:\NetSource\BlazorSolution\bin\Debug\net8.0\icudt.dat
 D:\NetSource\BlazorSolution\obj\Debug\net8.0\compressed\99uk9raoe3-oh1zvcfom8.gz
 D:\NetSource\BlazorSolution\obj\Debug\net8.0\scopedcss\Pages\AdvanceForm.razor.rz.scp.css
-D:\NetSource\BlazorSolution\obj\Debug\net8.0\compressed\bdbr9bho3c-u1q79y7bes.gz
-D:\NetSource\BlazorSolution\obj\Debug\net8.0\compressed\52haj70o4t-s3dt30ctz2.gz
-D:\NetSource\BlazorSolution\obj\Debug\net8.0\compressed\n11ge9gzql-v9xu7cvdlr.gz
-D:\NetSource\BlazorSolution\obj\Debug\net8.0\compressed\zfidv08mdx-mpo82533ho.gz
+D:\NetSource\BlazorSolution\obj\Debug\net8.0\compressed\eutzfcx8ba-mv535bwyet.gz
+D:\NetSource\BlazorSolution\obj\Debug\net8.0\scopedcss\Pages\FlexGridView.razor.rz.scp.css
+D:\NetSource\BlazorSolution\obj\Debug\net8.0\scopedcss\Pages\C1DataPagerEx.razor.rz.scp.css
+D:\NetSource\BlazorSolution\obj\Debug\net8.0\compressed\bdbr9bho3c-njnpw7zfp7.gz
+D:\NetSource\BlazorSolution\obj\Debug\net8.0\compressed\52haj70o4t-8s8rma1uy2.gz
+D:\NetSource\BlazorSolution\obj\Debug\net8.0\compressed\n11ge9gzql-fhqt3bky4r.gz
+D:\NetSource\BlazorSolution\obj\Debug\net8.0\compressed\zfidv08mdx-afjpaf3f54.gz

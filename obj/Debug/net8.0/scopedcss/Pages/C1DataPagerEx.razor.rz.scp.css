@@ -1,0 +1,161 @@
+/* Container */
+.jp-paging[b-rdkcz0t3k5] {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: #333;
+    padding: 8px 0;
+}
+
+/* Labels */
+.jp-paging > span[b-rdkcz0t3k5] {
+    white-space: nowrap;
+    color: #666;
+}
+
+/* Left margin for page label */
+.jp-paging .ml-3[b-rdkcz0t3k5] {
+    margin-left: 16px;
+}
+
+/* Select dropdown */
+.jp-paging select[b-rdkcz0t3k5] {
+    height: 26px;
+    min-width: 60px;
+    padding: 2px 24px 2px 8px;
+    font-size: 13px;
+    border: 1px solid #d0d0d0;
+    border-radius: 4px;
+    background-color: #fff;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 8L2 4h8z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 6px center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+    .jp-paging select:hover[b-rdkcz0t3k5] {
+        border-color: #999;
+        background-color: #fafafa;
+    }
+
+    .jp-paging select:focus[b-rdkcz0t3k5] {
+        outline: none;
+        border-color: #4a90e2;
+        box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+    }
+
+/* Icon buttons */
+.jp-paging .icon-btn[b-rdkcz0t3k5] {
+    all: unset;
+    cursor: pointer;
+    color: #f5a623;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+    .jp-paging .icon-btn:hover:not(:disabled)[b-rdkcz0t3k5] {
+        color: #e09500;
+        background-color: rgba(245, 166, 35, 0.08);
+        transform: translateY(-1px);
+    }
+
+    .jp-paging .icon-btn:active:not(:disabled)[b-rdkcz0t3k5] {
+        color: #c98100;
+        transform: translateY(0);
+    }
+
+    .jp-paging .icon-btn:disabled[b-rdkcz0t3k5] {
+        opacity: 0.5;
+        cursor: not-allowed;
+        color: #999;
+    }
+
+    .jp-paging .icon-btn:focus-visible[b-rdkcz0t3k5] {
+        outline: 2px solid #f5a623;
+        outline-offset: 2px;
+    }
+
+    .jp-paging .icon-btn svg[b-rdkcz0t3k5] {
+        display: block;
+        pointer-events: none;
+        width: 14px;
+        height: 14px;
+    }
+
+/* Page count emphasis */
+.jp-paging > span:nth-child(2)[b-rdkcz0t3k5] {
+    font-weight: 600;
+    color: #333;
+}
+
+/* Divider styling */
+.jp-paging > span:nth-last-child(3)[b-rdkcz0t3k5] {
+    color: #999;
+    font-weight: 400;
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+    .jp-paging[b-rdkcz0t3k5] {
+        gap: 6px;
+        font-size: 12px;
+        flex-wrap: wrap;
+    }
+
+    .jp-paging select[b-rdkcz0t3k5] {
+        min-width: 50px;
+        height: 24px;
+    }
+
+    .jp-paging .icon-btn[b-rdkcz0t3k5] {
+        width: 28px;
+        height: 28px;
+    }
+
+        .jp-paging .icon-btn svg[b-rdkcz0t3k5] {
+            width: 16px;
+            height: 16px;
+        }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .jp-paging[b-rdkcz0t3k5] {
+        color: #e0e0e0;
+    }
+
+        .jp-paging > span[b-rdkcz0t3k5] {
+            color: #b0b0b0;
+        }
+
+        .jp-paging select[b-rdkcz0t3k5] {
+            background-color: #2a2a2a;
+            border-color: #4a4a4a;
+            color: #e0e0e0;
+        }
+
+            .jp-paging select:hover[b-rdkcz0t3k5] {
+                border-color: #666;
+                background-color: #333;
+            }
+
+            .jp-paging select:focus[b-rdkcz0t3k5] {
+                border-color: #5a9de5;
+            }
+
+        .jp-paging .icon-btn:disabled[b-rdkcz0t3k5] {
+            opacity: 0.5;
+            color: #777;
+        }
+}

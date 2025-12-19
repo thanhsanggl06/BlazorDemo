@@ -33,33 +33,52 @@
     </FlexGridColumns>
 </FlexGrid>
 <C1DataPager Source="@collection2" />
+<C1DataPagerEx Source="@collection2" />
 
 @code {
-    [Parameter] public List<TModel>? ValidatedData { get; set; }
+    [Parameter] public List<TModel> ValidatedData { get; set; }
     [Parameter] public int PageSize { get; set; }
     private FlexGrid? flexGrid;
 
-    [Parameter] public EventCallback OnRendered { get; set; }
+    private C1DataCollection<TModel>? baseCollection { get; set; }
+    private VirtualCollectionCustom<TModel>? virtualCollection { get; set; }
+    private C1PagedDataCollection<TModel>? collection2 { get; set; }
 
-    private C1DataCollection<TModel> baseCollection { get; set; }
-    private VirtualCollectionCustom<TModel> virtualCollection { get; set; }
-    private C1PagedDataCollection<TModel> collection2 { get; set; }
+    private bool disablePrev => collection2?.CurrentPage == 0;
+    private bool disableNext => collection2?.CurrentPage >= collection2?.PagesCount - 1;
 
 
-    protected override async Task OnInitializedAsync()
+
+    private async Task NextPage()
+    {
+        if (collection2?.CurrentPage < collection2?.PagesCount - 1)
+        {
+            await collection2.MoveToPageAsync(collection2.CurrentPage + 1, default);
+        }
+    }
+
+    private async Task PrevPage()
+    {
+        if (collection2?.CurrentPage > 0)
+        {
+            await collection2.MoveToPageAsync(collection2.CurrentPage - 1, default);
+        }
+    }
+
+    private async Task TestMovePage()
+    {
+        await collection2.MoveToPageAsync(1, default);
+        collection2.PageSize = 6;
+        StateHasChanged();
+    }
+
+    protected override void OnInitialized()
     {
         baseCollection = new C1DataCollection<TModel>(ValidatedData);
         virtualCollection = new VirtualCollectionCustom<TModel>(baseCollection) { PageSize = PageSize };
         collection2 = new C1PagedDataCollection<TModel>(virtualCollection) { PageSize = PageSize };
+        StateHasChanged();
 
-    }  
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            await OnRendered.InvokeAsync();
-        }
     }
 
 

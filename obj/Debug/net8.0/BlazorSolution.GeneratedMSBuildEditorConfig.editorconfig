@@ -77,10 +77,6 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRXhhbXBsZUdyaWQucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/NetSource/BlazorSolution/Pages/FlexGridView.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRmxleEdyaWRWaWV3LnJhem9y
-build_metadata.AdditionalFiles.CssScope = 
-
 [D:/NetSource/BlazorSolution/Pages/GridTest.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcR3JpZFRlc3QucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
@@ -132,3 +128,11 @@ build_metadata.AdditionalFiles.CssScope = b-0av9xf34qz
 [D:/NetSource/BlazorSolution/Pages/AdvanceForm.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWR2YW5jZUZvcm0ucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = b-nhq3e6t3wa
+
+[D:/NetSource/BlazorSolution/Pages/C1DataPagerEx.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQzFEYXRhUGFnZXJFeC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-rdkcz0t3k5
+
+[D:/NetSource/BlazorSolution/Pages/FlexGridView.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRmxleEdyaWRWaWV3LnJhem9y
+build_metadata.AdditionalFiles.CssScope = b-sxcyej3cnc
